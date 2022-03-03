@@ -1,20 +1,25 @@
 const mongoose = require("mongoose");
 
 const ReplySchema = new mongoose.Schema({
-    comment_id: {
+    planId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Plan',
+    },
+    commentId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Comment',
     },
-    user_id: {
+    userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
     },
     content:{
         type: String
     },
-});
+},
+{ timestamps: true });
 
-ReplySchema.virtual('reply_id').get(function () {
+ReplySchema.virtual('replyId').get(function () {
     return this._id.toHexString();
 });
 

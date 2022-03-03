@@ -1,90 +1,84 @@
 const express = require('express');
 const router = express.Router();
-const passport = require('passport')
-const User = require('../schemas/user')
-const KakaoStrategy = require("passport-kakao").Strategy;
-const {kakaokey} = process.env
+const passport = require('passport');
 
-passport.use('kakao', new KakaoStrategy({
-    clientID: kakaokey,
-    callbackURL: '/api/auth/kakao/callback',     // 위에서 설정한 Redirect URI
-}, (accessToken, refreshToken, profile, done) => {
-    // console.log(profile);
-    console.log(accessToken);
-    console.log(refreshToken);
-    // authorization 에 성공했을때의 액션
-    let user = {
-        profile: profile._json,
-        accessToken: accessToken
-    }
-    return done(null, user)
-}
-))
+const User = require('../schemas/user');
+
+const KakaoStrategy = require('passport-kakao').Strategy;
+const jwt = require('jsonwebtoken');
+const authMiddleware = require('../middlewares/auth-middleware');
+
+const { kakaokey, kakaoSecretkey, JWT_SECRET_KEY } = process.env;
+
+// module.exports = () => {
+passport.use(
+    'kakao',
+    new KakaoStrategy(
+        {
+            clientID: kakaokey,
+            clientSecret: kakaoSecretkey,
+            callbackURL: '/api/auth/kakao/callback', // 위에서 설정한 Redirect URI
+        },
+        async (accessToken, refreshToken, profile, done) => {
+            // console.log(profile);
+            // console.log(accessToken);
+            // console.log(refreshToken);
+            try {
+                const exUser = await User.findOne({
+                    snsId: profile.id,
+                    provider: profile.provider,
+                });
+                if (exUser) {
+                    done(null, exUser);
+                } else {
+                    const newUser = await User.create({
+                        email:
+                            profile._json && profile._json.kakao_account.email,
+                        nickname: profile.displayName,
+                        snsId: profile.id,
+                        profile_img: profile._json.properties.thumbnail_image,
+                        provider: 'kakao',
+                    });
+                    done(null, newUser);
+                }
+            } catch (error) {
+                console.error(error);
+                done(error);
+            }
+        }
+    )
+);
+// };
 
 passport.serializeUser(function (user, done) {
     // console.log(`user : ${user.profile.id}`)
-    done(null, user)
-})
+    done(null, user);
+});
 passport.deserializeUser(function (obj, done) {
     // console.log(`obj : ${obj}`)
-    done(null, obj)
-})
-
-
-
-
-
-// passport.use('kakao', new KakaoStrategy({
-//     clientID: kakaokey,
-//     callbackURL: '/api/auth/kakao/callback',     // 위에서 설정한 Redirect URI
-// }, async (accessToken, refreshToken, profile, done) => {
-//     console.log(profile);
-//     const existUser = await User.findOne({sns_id: profile.id, provider: profile.provider})
-
-//         if(existUser) {
-//             done(null, existUser)
-//         } else {
-//             const newUser = await User.create({
-//                 sns_id: profile.id,
-//                 email: profile.email,
-//                 nickname:profile.nickname,
-//                 profile_img: profile.thumbnail_image_url,
-//                 provider: 'kakao',
-//             })
-//             done(null, newUser)
-//         }
-
-// }))
-
-
-
-
-        // const existUser = await User.findOne({sns_id: profile.id, provider: profile.provider})
-
-        // if(existUser) {
-        //     done(null, existUser)
-        // } else {
-        //     const newUser = await User.create({
-        //         sns_id: profile.id,
-        //         email: profile.email,
-        //         nickname:profile.nickname,
-        //         profile_img: profile.thumbnail_image_url,
-        //         provider: 'kakao',
-        //     })
-        //     done(null, newUser)
-        // }
-
-// }))
-
+    done(null, obj);
+});
 
 router.get('/auth/kakao', passport.authenticate('kakao'));
 
-router.get('/auth/kakao/callback', passport.authenticate('kakao', { failureRedirect: '/',}),
-(err, user) => {
-//   console.log("리퀘스트", err)
-//   console.log("ㅁㄴㅇㅁㄴㅇ", user)
+router.get(
+    '/auth/kakao/callback',
+    passport.authenticate('kakao', { failureRedirect: '/' }),
+    (req, res) => {
+        console.log(req.user);
+        const token = jwt.sign({ snsId: req.user.snsId }, JWT_SECRET_KEY);
+
+        res.json({ token });
+    }
+);
+
+router.get('/users/auth/me', authMiddleware, async (req, res) => {
+    const { user } = res.locals;
+    res.json({
+        userId: user.email,
+        nickname: user.nickname,
+        userImg: user.profile_img,
+    });
 });
-
-
 
 module.exports = router;

@@ -1,11 +1,12 @@
 const mongoose = require("mongoose");
+const Reply = require('../schemas/reply');
 
 const CommentSchema = new mongoose.Schema({
-    travel_id: {
+    planId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Travel',
+        ref: 'Plan',
     },
-    user_id: {
+    userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
     },
@@ -15,9 +16,27 @@ const CommentSchema = new mongoose.Schema({
 },
 { timestamps: true });
 
-CommentSchema.virtual('comment_id').get(function () {
+CommentSchema.virtual('commentId').get(function () {
     return this._id.toHexString();
 });
+
+CommentSchema.virtual('replies',{
+    ref: 'Reply',
+    localField: '_id',
+    foreignField: 'Commentid',
+})
+
+CommentSchema.pre(
+    'deleteOne',
+    { document: false, query: true },
+    async function (next) {
+        // comment id
+        const { _id } = this.getFilter();
+        // reply 전부 삭제
+        await Reply.deleteMany({ commentId: _id });
+        next();
+    }
+);
 
 CommentSchema.set('toJSON', { virtuals: true });
 CommentSchema.set('toObject', { virtuals: true });

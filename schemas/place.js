@@ -1,29 +1,37 @@
 const mongoose = require("mongoose");
 
 const PlaceSchema = new mongoose.Schema({
-    day_id: {
+    planId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Plan',
+    },
+    dayId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Day',
     },
-    place_name: {
+    placeName: {
         type: String    
     },
-    coordinate: {
-        type: String
+    lat: {
+        type: Number
+    },
+    lng: {
+        type: Number
     },
     address: {
         type: String 
     },
     memolmage: {
-        type: String
+        type: Array,
     },
     memoText: {
         type: String,
+        default: ''
     }
 },
 { timestamps: true });
 
-PlaceSchema.virtual('place_id').get(function () {
+PlaceSchema.virtual('placeId').get(function () {
     return this._id.toHexString();
 });
 

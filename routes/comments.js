@@ -1,0 +1,136 @@
+const express = require('express');
+const router = express.Router();
+
+//스키마
+const User = require('../schemas/user');
+const Plan = require('../schemas/plan');
+const Reply = require('../schemas/reply');
+const Like = require('../schemas/like');
+const Bookmark = require('../schemas/bookmark');
+const Place = require('../schemas/place');
+const Day = require('../schemas/day');
+const Comment = require('../schemas/comment');
+
+//미들웨어
+const authMiddleware = require('../middlewares/auth-middleware');
+
+//여행에 달린 댓글 조회
+router.get('/plans/:planId/comments', async (req, res) => {
+    const { planId } = req.params;
+    const comments = await Comment.find({ planId }).populate({
+        path: 'replies',
+    });
+    res.json({ comments });
+});
+
+//여행 댓글 작성
+router.post('/plans/:planId/comments', authMiddleware, async (req, res) => {
+    const { userId } = res.locals.user;
+    const { content } = req.body;
+    const { planId } = req.params;
+    
+    const newComment = await Comment.create({
+        userId,
+        content,
+        planId     
+    });
+    
+    res.json({
+        result: 'success',
+        message: '성공',
+    });
+    
+})
+
+//여행 댓글 수정
+router.patch('/plans/:planId/comments/:commentId', authMiddleware, async (req, res) => {
+    const { userId }= res.locals.user;
+
+    const { commentId, planId } = req.params;
+    const { content } = req.body;
+
+    const targetComment = await Comment.findOne({ _id: commentId })
+    if (targetComment.userId.toHexString() !== userId) {
+        return res.status(401).json({ result: "false", message: "본인의 댓글만 수정할수있습니다"})
+    }
+    await Comment.updateOne({ _id: commentId }, {$set : { content }})
+    res.json({
+        result: "success",
+        message: "성공"  
+    })
+})
+
+//여행 댓글 삭제    
+router.delete('/plans/:plansId/comments/:commentId', authMiddleware, async (req, res) => {
+    const { _id } = res.locals.user;
+    const { commentId } = req.params;
+
+    const targetComment = await Comment.findOne({ _id : commentId });
+    if (targetComment.userId !== _id) {
+        return res.json({ result: 'false' , message: "본인의 댓글만 삭제할수있습니다"});
+    } else {
+        await Comment.deleteOne({ _id : commentId });
+        res.json({
+            result: 'success',
+            message: "성공ㅇㅇㅇㅇㅇㅇㅇㅇㅇ"
+        });
+    }
+});
+
+//답글 생성
+router.post('/plans/:planId/comments/:commentId/reply', authMiddleware, async (req, res) => {
+    const { userId } = res.locals.user;
+    const { content } = req.body;
+    const { planId, commentId } = req.params;
+    
+    const newReply = await Reply.create({
+        userId,
+        commentId,
+        content,
+        planId     
+    });
+    
+    res.json({
+        result: 'success',
+        message: '성공',
+    });
+    
+})
+
+
+
+//답글 수정
+router.patch('/plans/:planId/comments/:commentId/reply/:replyId', authMiddleware, async (req, res) => {
+    const { userId } = res.locals.user;
+    const { replyId } = req.params;
+    const { content } = req.body;
+
+    const targetReply = await Reply.findOne({ _id : replyId })
+    if (targetReply.userId.toHexString() !== userId) {
+        return res.status(401).json({ result: "false", message: "본인의 댓글만 수정할수있습니다"})
+    }
+    await Reply.updateOne({ _id: replyId }, {$set : { content }})
+    res.json({
+        result: "success",
+        message: "성공"  
+    })
+})
+
+//여행 댓글에 답글 삭제
+router.delete('/plans/:planId/comments/:commentId/reply/:replyId', authMiddleware, async (req, res) => {
+    const { userId } = res.locals.user;
+    const { replyId } = req.params;
+
+    const targetReply = await Reply.findOne({ _id: replyId });
+    if (targetReply.userId.toHexString() !== userId) {
+        return res.json({ result: 'false' , message: "본인의 댓글만 삭제할수있습니다"});
+    } else {
+        await Reply.deleteOne({ _id: replyId });
+        res.json({
+            result: 'success',
+            message: "성공"
+        });
+    }
+    
+})
+module.exports = router;

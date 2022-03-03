@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
 
 const LikeSchema = new mongoose.Schema({
-    travel_id: {
+    planId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Travel',
+        ref: 'Plan',
     },
-    user_id: {
+    userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
     },

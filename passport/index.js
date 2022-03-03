@@ -6,7 +6,7 @@ const { kakaokey } = process.env
 module.exports = () => {
     passport.use('kakao', new KakaoStrategy({
         clientID: kakaokey,
-        callbackURL: '/api/auth/kakao/callback',     // 위에서 설정한 Redirect URI
+        callbackURL: '/auth/kakao/callback',     // 위에서 설정한 Redirect URI
       },
       
     async (accessToken, refreshToken, profile, done) => {

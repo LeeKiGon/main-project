@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema({
-    sns_id: {
+    snsId: {
         type: String
     },
     email: {
@@ -18,14 +18,14 @@ const UserSchema = new mongoose.Schema({
     },
 });
 
-UserSchema.virtual('user_id').get(function () {
+UserSchema.virtual('userId').get(function () {
     return this._id.toHexString();
 });
 
-UserSchema.virtual('travels',{
-    ref: 'Travel',
+UserSchema.virtual('plans',{
+    ref: 'Plan',
     localField: '_id',
-    foreignField: 'user_id',
+    foreignField: 'userid',
 })
 
 UserSchema.set('toJSON', { virtuals: true });
