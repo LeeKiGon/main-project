@@ -5,7 +5,6 @@ const cors = require('cors');
 
 const app = express();
 const router = express.Router();
-const testRouter = require('./routes/test')
 const authRouter = require('./routes/auth')
 const planRouter = require('./routes/plans')
 const commentRouter = require('./routes/comments')
@@ -26,8 +25,8 @@ app.use((req, res, next) => {
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 app.use(express.json());
- app.use(express.urlencoded({extended: false})); // API 요청에서 받은 body 값을 파싱(해석)하는 역할을 수행하는 것이 bodyParser
-app.use('/api', [testRouter, authRouter, planRouter, commentRouter])
+app.use(express.urlencoded({extended: false})); // API 요청에서 받은 body 값을 파싱(해석)하는 역할을 수행하는 것이 bodyParser
+app.use('/api', [authRouter, planRouter, commentRouter])
 
 
 const corsOptions = {
