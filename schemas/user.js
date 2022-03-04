@@ -25,7 +25,19 @@ UserSchema.virtual('userId').get(function () {
 UserSchema.virtual('plans',{
     ref: 'Plan',
     localField: '_id',
-    foreignField: 'userid',
+    foreignField: 'userId',
+})
+
+UserSchema.virtual('likes',{
+    ref: 'Like',
+    localField: '_id',
+    foreignField: 'userId',
+})
+
+UserSchema.virtual('bookmarks',{
+    ref: 'Bookmark',
+    localField: '_id',
+    foreignField: 'userId',
 })
 
 UserSchema.set('toJSON', { virtuals: true });

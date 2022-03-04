@@ -21,7 +21,7 @@ const PlaceSchema = new mongoose.Schema({
     address: {
         type: String 
     },
-    memolmage: {
+    memoImage: {
         type: Array,
     },
     memoText: {

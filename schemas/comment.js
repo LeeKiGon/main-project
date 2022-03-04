@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Reply = require('../schemas/reply');
+const Like = require('../schemas/like')
 
 const CommentSchema = new mongoose.Schema({
     planId: {
@@ -23,8 +24,15 @@ CommentSchema.virtual('commentId').get(function () {
 CommentSchema.virtual('replies',{
     ref: 'Reply',
     localField: '_id',
-    foreignField: 'Commentid',
+    foreignField: 'commentId',
 })
+
+CommentSchema.virtual('likeCount', {
+    localField: '_id',
+    ref: 'Like',
+    foreignField: 'commentId',
+    count: true,
+});
 
 CommentSchema.pre(
     'deleteOne',

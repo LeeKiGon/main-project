@@ -81,4 +81,22 @@ router.get('/users/auth/me', authMiddleware, async (req, res) => {
     });
 });
 
+
+// 유저 프로필 조회
+router.get('/users/:userId', authMiddleware, async (req, res) => {
+    const { user } = res.locals;
+    const { userId } = req.params;
+
+    const loginUser = await User.findOne({ snsId : user.snsId })
+    const findUser = await User.findOne({_id: userId})
+
+    if(loginUser.userId === findUser.userId){
+        
+    } else {
+        const findgood = await User.find
+        return res.json({user})
+    }
+
+});
+
 module.exports = router;

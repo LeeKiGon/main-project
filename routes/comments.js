@@ -17,8 +17,8 @@ const authMiddleware = require('../middlewares/auth-middleware');
 //여행에 달린 댓글 조회
 router.get('/plans/:planId/comments', async (req, res) => {
     const { planId } = req.params;
-    const comments = await Comment.find({ planId }).populate({
-        path: 'replies',
+    const comments = await Comment.find({ planId }).populate('likeCount userId').populate({
+        path: 'replies', populate :{ path : 'userId' }
     });
     res.json({ comments });
 });
@@ -43,10 +43,10 @@ router.post('/plans/:planId/comments', authMiddleware, async (req, res) => {
 })
 
 //여행 댓글 수정
-router.patch('/plans/:planId/comments/:commentId', authMiddleware, async (req, res) => {
+router.patch('/plans/comments/:commentId', authMiddleware, async (req, res) => {
     const { userId }= res.locals.user;
 
-    const { commentId, planId } = req.params;
+    const { commentId } = req.params;
     const { content } = req.body;
 
     const targetComment = await Comment.findOne({ _id: commentId })
@@ -61,7 +61,7 @@ router.patch('/plans/:planId/comments/:commentId', authMiddleware, async (req, r
 })
 
 //여행 댓글 삭제    
-router.delete('/plans/:plansId/comments/:commentId', authMiddleware, async (req, res) => {
+router.delete('/plans/comments/:commentId', authMiddleware, async (req, res) => {
     const { _id } = res.locals.user;
     const { commentId } = req.params;
 
@@ -72,13 +72,46 @@ router.delete('/plans/:plansId/comments/:commentId', authMiddleware, async (req,
         await Comment.deleteOne({ _id : commentId });
         res.json({
             result: 'success',
-            message: "성공ㅇㅇㅇㅇㅇㅇㅇㅇㅇ"
+            message: "성공"
         });
     }
 });
 
+//여행 댓글 좋아요
+router.post('/plans/comments/:commentId/like', authMiddleware, async (req, res) => {
+    const { userId } = res.locals.user;
+    const { commentId } = req.params;
+    
+    const newLike = await Like.create({
+        userId,
+        commentId,
+    });
+    res.json({
+        result: 'success',
+        message: '성공',
+    });
+});
+
+// 여행 댓글 좋아요 취소
+router.delete('/plans/comments/:commentId/like', authMiddleware, async (req, res) => {
+    const { userId } = res.locals.user;
+    const { commentId } = req.params;
+
+    await Like.deleteOne({
+        userId,
+        commentId,
+    });
+
+    
+    res.json({
+        result: 'success',
+        message: '성공',
+    });
+})
+
+
 //답글 생성
-router.post('/plans/:planId/comments/:commentId/reply', authMiddleware, async (req, res) => {
+router.post('/plans/comments/:commentId/reply', authMiddleware, async (req, res) => {
     const { userId } = res.locals.user;
     const { content } = req.body;
     const { planId, commentId } = req.params;
@@ -98,9 +131,40 @@ router.post('/plans/:planId/comments/:commentId/reply', authMiddleware, async (r
 })
 
 
+//답글 좋아요
+router.post('/plans/comments/replies/:replyId/like', authMiddleware, async (req, res) => {
+    const { userId } = res.locals.user;
+    const { replyId } = req.params;
+    
+    const newLike = await Like.create({
+        uerIds,
+        replyId,
+    });
+    res.json({
+        result: 'success',
+        message: '성공',
+    });
+});
+
+// 답글 좋아요 취소
+router.delete('/plans/comments/replies/:replyId/like', authMiddleware, async (req, res) => {
+    const { userId } = res.locals.user;
+    const { replyId } = req.params;
+
+    await Like.deleteOne({
+        userId,
+        replyId,
+    });
+
+    
+    res.json({
+        result: 'success',
+        message: '성공',
+    });
+})
 
 //답글 수정
-router.patch('/plans/:planId/comments/:commentId/reply/:replyId', authMiddleware, async (req, res) => {
+router.patch('/plans/comments/replies/:replyId', authMiddleware, async (req, res) => {
     const { userId } = res.locals.user;
     const { replyId } = req.params;
     const { content } = req.body;
@@ -113,11 +177,11 @@ router.patch('/plans/:planId/comments/:commentId/reply/:replyId', authMiddleware
     res.json({
         result: "success",
         message: "성공"  
-    })
-})
+    });
+});
 
 //여행 댓글에 답글 삭제
-router.delete('/plans/:planId/comments/:commentId/reply/:replyId', authMiddleware, async (req, res) => {
+router.delete('/plans/comments/replies/:replyId', authMiddleware, async (req, res) => {
     const { userId } = res.locals.user;
     const { replyId } = req.params;
 

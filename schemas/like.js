@@ -5,6 +5,14 @@ const LikeSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Plan',
     },
+    commentId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Comment',
+    },
+    replyId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Reply',
+    },    
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
