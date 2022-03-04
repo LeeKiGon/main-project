@@ -221,7 +221,7 @@ router.post('/plans/days/places/:placeId', upload.fields([
 })
 
 //특정 장소 삭제하기
-router.delete('/plans/days/places/:placeId', async (req, res) => {
+router.delete('/plans/days/places/:placeId', authMiddleware, async (req, res) => {
     const { placeId } = req.params;
     await Place.deleteOne({ _id: placeId });
     res.json({
