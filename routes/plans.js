@@ -142,7 +142,7 @@ router.post('/plans', authMiddleware, async (req, res) => {
     res.json({
         result: 'success',
         message: "성공", 
-        planId: newPlan.plan_id });
+        planId: newPlan.planId });
 });
 
 //특정 여행 받아오기
