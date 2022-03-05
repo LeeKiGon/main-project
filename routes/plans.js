@@ -237,7 +237,7 @@ router.patch('/plans/days/places/:placeId', authMiddleware, upload.fields([
     for(let i=0; i< videoUrl.length; i++) {
         findPlace.memoImage.push(videoUrl[i].location)
     }
-    
+
     for(let i=0; i< imageUrl.length; i++) {
         findPlace.memoImage.push(imageUrl[i].location)
     }
