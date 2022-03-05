@@ -261,15 +261,14 @@ router.delete('/plans/days/places/:placeId', authMiddleware, async (req, res) =>
 
 //여행 삭제하기
 router.delete('/plans/:planId', authMiddleware, async (req, res) => {
-    const { user } = res.locals;
-    const nickname = user.nickname;
-    const { planId } = req.params;
+    const { nickname } = res.locals.user;
+    const { planId }  = req.params;
 
     const targetPlan = await Plan.findOne({ _id: planId, nickname });
     if (!targetPlan) {
         return res.json({ result: 'false' });
     } else {
-        await Plan.deleteOne({ planId });
+        await Plan.deleteOne({ _id : planId });
         res.json({
             result: 'success',
             message: "삭제 완료"
