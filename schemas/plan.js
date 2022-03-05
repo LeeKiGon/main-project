@@ -17,26 +17,30 @@ const PlanSchema = new mongoose.Schema({
     title: {
         type: String
     },
-    detination: {
+    destination: {
         type: String
     },
-    locations:{
+    locations: {
         type: Array
     },
     withlist: {
         type: Array
     },
     style: {
-        type: Array,
-    },    
-    nickname: {
+        type: Array
+    },
+    status: {
         type: String,
+        default: 'private'
+    },
+    nickname: {
+        type: String
     },
     startDate: {
-        type: String,
+        type: String
     },
     endDate: {
-        type: String,
+        type: String
     },
 },
 {timestamps:true});

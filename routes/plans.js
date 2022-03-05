@@ -14,24 +14,17 @@ const Comments = require('../schemas/comment');
 //미들웨어
 const authMiddleware = require('../middlewares/auth-middleware');
 const { upload } = require('../middlewares/upload')
+const { deleteS3 } = require('../middlewares/deleteS3')
 
 /* 메인 페이지 */
 // 전체 여행 불러오기
 router.get('/plans', authMiddleware, async (req, res) => {
     const {user} = res.locals;
-    const { page } = req.query;
+    let { page } = req.query;
     console.log(page)
-    if(page) {
-        +page
-    } else page = 1;
+    page === undefined ? page = 1 : +page;
     const numPlans = await Plan.estimatedDocumentCount(); // 전체 포스트 갯수
     const wholePages = numPlans === 0 ? 1 : Math.ceil(numPlans / 5); // 5로 나눠서 필요한 페이지 갯수 구하기
-    // const pagingPlans = await Plan.find()
-    //     .sort('-createdAt')
-    //     .skip(5 * (page - 1))
-    //     .limit(5)
-    //     .populate('userId', 'snsId email nickname profile_img')
-    //     .exec();
 
     const plansLikeBookmark = await Plan.findLikeBookmark(page, user);
 
@@ -163,63 +156,98 @@ router.get('/plans/:planId', async (req, res) => {
         result: 'success',
         message: "성공", 
         plan
-     });
+    });
+});
+
+// 공개 or 비공개 컨트롤하기
+router.post('/plans/:planId/public', authMiddleware, async (req, res) => {
+    const { userId } = res.locals.user;
+    const { planId } = req.params;
+    const { status } = req.body;
+
+    const findPlan = await Plan.findOne({_id: planId})
+    if(findPlan.userId !== userId) {
+        return res.status(401).json({ result: 'fail', message: '본인의 여행만 변경할수 있습니다.' });
+    }
+
+    findPlan.status = status;
+    await findPlan.save();
+
+    return res.status(200).json({ result : 'success', message: '변경 완료 되었습니다.' })
 });
 
 //특정 여행에 장소 추가하기
-router.post('/plans/days/:dayId', async (req, res) => {
-    const { dayId } = req.params;
-    const { placeName, lat, lng, address } = req.body;
-
-    const findDay = await Day.findOne({ _id: dayId })
-    const newPlace = new Place({
-        planId : findDay.planId,
-        dayId,
-        placeName,
-        lat,
-        lng,
-        address,
-    });
-    await newPlace.save();
-    res.json({});
-});
-
-//특정 여행에 장소 사진, 메모 추가하기
-router.post('/plans/days/places/:placeId', upload.fields([
+router.post('/plans/days/:dayId', upload.fields([
     { name: 'videoFile', maxCount: 1 },
     { name: 'imageFile', maxCount: 5 },
 ]), async (req, res) => {
-    const { placeId } = req.params;
-    const { memoText } = req.body;
+    const { dayId } = req.params;
+    const { placeName, lat, lng, address, time, memoText } = req.body;
 
     let videoUrl = [];
     let imageUrl = [];
 
     req.files.videoFile ? videoUrl = req.files.videoFile : videoUrl;
     req.files.imageFile ? imageUrl = req.files.imageFile : imageUrl;
-    
 
-    const updatePlace = await Place.findOne({_id: placeId})
+    const findDay = await Day.findOne({ _id: dayId })
+    const newPlace = new Place({
+        planId : findDay.planId,
+        dayId,
+        placeName,
+        time,
+        lat,
+        lng,
+        address,
+        memoText,
+        memoImage,
+    });
+
 
     for(let i=0; i< videoUrl.length; i++) {
-        updatePlace.memoImage.push(videoUrl[i].location)
+        newPlace.memoImage.push(videoUrl[i].location)
+    }
+    for(let i=0; i< imageUrl.length; i++) {
+        newPlace.memoImage.push(imageUrl[i].location)
+    }
+    if (memoText) newPlace.memoText = memoText;
+
+
+
+    await newPlace.save();
+    res.json({});
+});
+
+//여행 장소 및 내용 수정하기
+router.patch('/plans/days/places/:placeId', authMiddleware, upload.fields([
+    { name: 'videoFile', maxCount: 1 },
+    { name: 'imageFile', maxCount: 5 },
+]), async (req, res) => {
+    const { placeId } = req.params;
+    const { placeName, lat, lng, address, time, memoText } = req.body;
+
+    let videoUrl = [];
+    let imageUrl = [];
+
+    req.files.videoFile ? videoUrl = req.files.videoFile : videoUrl;
+    req.files.imageFile ? imageUrl = req.files.imageFile : imageUrl;
+
+    const findPlace = await Place.findOneAndUpdate({ _id: placeId }, { placeName, lat, lng, address, time, memoText})
+
+    for(let i=0; i< videoUrl.length; i++) {
+        findPlace.memoImage.push(videoUrl[i].location)
     }
     
-
     for(let i=0; i< imageUrl.length; i++) {
-        updatePlace.memoImage.push(imageUrl[i].location)
+        findPlace.memoImage.push(imageUrl[i].location)
     }
     
     if (memoText) updatePlace.memoText = memoText;
 
-    await updatePlace.save();
-
-
-    res.json({
-        result: 'success', 
-        message: '추가 완료'
-    })
-})
+    
+    await findPlace.save();
+    res.json({});
+});
 
 //특정 장소 삭제하기
 router.delete('/plans/days/places/:placeId', authMiddleware, async (req, res) => {
@@ -247,6 +275,16 @@ router.delete('/plans/:planId', authMiddleware, async (req, res) => {
             message: "삭제 완료"
         });
     }
+});
+
+/* 나의 여행 페이지*/
+// 나의 여행 불러오기
+router.get('/myplans', authMiddleware, async (req, res) => {
+    const { userId } = res.locals.user;
+
+    const findplans = await Plan.find({ userId });
+
+    res.json({ plans : findplans });
 });
 
 module.exports = router;

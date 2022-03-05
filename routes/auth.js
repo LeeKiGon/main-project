@@ -68,8 +68,8 @@ router.get(
         console.log(req.user);
         const token = jwt.sign({ snsId: req.user.snsId }, JWT_SECRET_KEY);
 
-        res.redirect('http://localhost:3000');
-        // res.json({token});
+        // res.redirect('http://localhost:3000');
+        res.json({token});
     }
 );
 

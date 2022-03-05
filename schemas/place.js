@@ -12,6 +12,9 @@ const PlaceSchema = new mongoose.Schema({
     placeName: {
         type: String    
     },
+    time: {
+        type: String
+    },
     lat: {
         type: Number
     },
