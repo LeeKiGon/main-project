@@ -17,7 +17,7 @@ const { kakaokey, kakaoSecretkey, JWT_SECRET_KEY } = process.env;
             {
                 clientID: kakaokey,
                 clientSecret: kakaoSecretkey,
-                callbackURL: '/api/auth/kakao/callback', // 위에서 설정한 Redirect URI
+                callbackURL: 'http://localhost:3000/api/auth/kakao/callback', // 위에서 설정한 Redirect URI
             },
             async (accessToken, refreshToken, profile, done) => {
                 console.log(profile);
