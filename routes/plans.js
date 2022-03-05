@@ -117,15 +117,16 @@ router.delete('/plans/:planId/like', authMiddleware, async (req, res) => {
 // 여행 생성하기
 router.post('/plans', authMiddleware, async (req, res) => {
     const { userId, nickname } = res.locals.user;
-    const { title, location, startDate, endDate, category } = req.body;
+    const { title, startDate, endDate, destination, style, withlist } = req.body;
     const newPlan = new Plan({
         userId,
         nickname,
         title,
-        location,
         startDate,
         endDate,
-        category,
+        destination,
+        style,
+        withlist
     });
 
     // 여행일정 day 계산 후 저장

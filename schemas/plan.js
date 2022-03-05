@@ -17,9 +17,18 @@ const PlanSchema = new mongoose.Schema({
     title: {
         type: String
     },
-    location:{
+    detination: {
         type: String
     },
+    locations:{
+        type: Array
+    },
+    withlist: {
+        type: Array
+    },
+    style: {
+        type: Array,
+    },    
     nickname: {
         type: String,
     },
@@ -28,9 +37,6 @@ const PlanSchema = new mongoose.Schema({
     },
     endDate: {
         type: String,
-    },
-    category: {
-        type: Object,
     },
 },
 {timestamps:true});
@@ -61,13 +67,22 @@ PlanSchema.virtual('likeCount', {
 
 PlanSchema.statics.findLikeBookmark = async function (page , user) {
     const findPaging = await this.find().sort('-createdAt').skip(5 * (page - 1)).limit(5).populate('userId likeCount bookmarkCount', 'snsId email nickname profile_img').exec();
-    for(let i = 0; i < findPaging.length; i++){
+    console.log(user)
+    if(user === undefined){
+        for (let i = 0; i < findPaging.length; i++) {
+        findPaging[i]._doc.isLike = false;
+        findPaging[i]._doc.isBookmark = false;
+        }
+        return findPaging;
+    }
+
+    for (let i = 0; i < findPaging.length; i++) {
         const LikeUser = await Like.findOne({ userId : user.userId, planId: findPaging[i].planId })
         const BookMarkUser = await Bookmark.findOne({ userId : user.userId, planId: findPaging[i].planId })
         LikeUser ? findPaging[i]._doc.isLike = true : findPaging[i]._doc.isLike = false
         BookMarkUser ? findPaging[i]._doc.isBookmark = true : findPaging[i]._doc.isBookmark = false
     };
-    return findPaging;
+    return findPaging; 
 };
 
 PlanSchema.pre(
