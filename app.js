@@ -18,7 +18,8 @@ app.use((req, res, next) => {
         `[${req.method}]`,
         req.originalUrl,
         ' - ',
-        new Date().toLocaleString()
+        new Date().toLocaleString(),
+        console.log('test')
     )
     next()
 })
