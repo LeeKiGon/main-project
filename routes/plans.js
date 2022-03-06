@@ -200,7 +200,6 @@ router.post('/plans/days/:dayId', upload.fields([
         lng,
         address,
         memoText,
-        memoImage,
     });
 
 
