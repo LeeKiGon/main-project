@@ -189,8 +189,9 @@ router.post('/plans/days/:dayId', upload.fields([
 
     req.files.videoFile ? videoUrl = req.files.videoFile : videoUrl;
     req.files.imageFile ? imageUrl = req.files.imageFile : imageUrl;
-
+    
     const findDay = await Day.findOne({ _id: dayId })
+    console.log(req.body.lat)
     const newPlace = new Place({
         planId : findDay.planId,
         dayId,
