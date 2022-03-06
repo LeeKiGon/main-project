@@ -19,7 +19,7 @@ app.use((req, res, next) => {
         req.originalUrl,
         ' - ',
         new Date().toLocaleString(),
-        console.log('test')
+        console.log('jenkinstest')
     )
     next()
 })
