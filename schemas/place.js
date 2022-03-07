@@ -10,7 +10,7 @@ const PlaceSchema = new mongoose.Schema({
         ref: 'Day',
     },
     placeName: {
-        type: String    
+        type: String
     },
     time: {
         type: String

@@ -13,25 +13,31 @@ const S3 = new AWS.S3({
 });
 
 const fileFilter = (req, file, cb) => {
+    // const ext = path.extname(file.originalname).toLocaleLowerCase();
+    // if (file.fieldname === 'videoFile') {
+    //     if (ext !== '.mp4') cb({ message: '비디오 파일 형식이 맞지 않습니다.' }, false);
+    //     else cb(null, true);
+    // } else if (file.fieldname === 'imageFile') {
+    //     if (ext !== '.jpg' && ext !== '.png' && ext !== '.jpeg' && ext !== '.jfif' && ext !== '.gif')
+    //         cb({ message: '이미지 파일 형식이 맞지 않습니다.' }, false);
+    //     else cb(null, true);
+    // }
     const ext = path.extname(file.originalname).toLocaleLowerCase();
-    if (file.fieldname === 'videoFile') {
-        if (ext !== '.mp4') cb({ message: '비디오 파일 형식이 맞지 않습니다.' }, false);
-        else cb(null, true);
-    } else if (file.fieldname === 'imageFile') {
-        if (ext !== '.jpg' && ext !== '.png' && ext !== '.jpeg' && ext !== '.jfif' && ext !== '.gif')
-            cb({ message: '이미지 파일 형식이 맞지 않습니다.' }, false);
-        else cb(null, true);
-    }
+
+    if (ext !== '.jpg' && ext !== '.png' && ext !== '.jpeg' && ext !== '.jfif' && ext !== '.gif')
+        cb({ message: '이미지 파일 형식이 맞지 않습니다.' }, false);
+    else cb(null, true);
 };
+    
 
 const storage = multerS3({
     s3: S3,
     bucket: BUCKET_NAME,
     key(req, file, cb) {
-        if (file.fieldname === 'videoFile')
-            cb(null, `videos/${Date.now()}${path.basename(file.originalname)}`);
-        if (file.fieldname === 'imageFile')
-            cb(null, `images/${Date.now()}${path.basename(file.originalname)}`);
+        // if (file.fieldname === 'videoFile')
+        //     cb(null, `videos/${Date.now()}${path.basename(file.originalname)}`);
+        // if (file.fieldname === 'imageFile')
+        cb(null, `images/${Date.now()}${path.basename(file.originalname)}`);
     },
 });
 
