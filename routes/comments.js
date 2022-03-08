@@ -32,16 +32,20 @@ router.post('/plans/:planId/comments', authMiddleware, async (req, res) => {
     const newComment = await Comment.create({
         userId,
         content,
-        planId     
+        planId
     });
     
+    // const comments = await Comment.find({ _id : newComment._id }).populate('likeCount userId').populate({
+    //     path: 'replies', populate :{ path : 'userId' }
+    // });    
+
     res.json({
-        newComment,
+        // newComment : comments,
         result: 'success',
         message: '성공',
     });
     
-})
+});
 
 //여행 댓글 수정
 router.patch('/plans/comments/:commentId', authMiddleware, async (req, res) => {
@@ -63,11 +67,11 @@ router.patch('/plans/comments/:commentId', authMiddleware, async (req, res) => {
 
 //여행 댓글 삭제    
 router.delete('/plans/comments/:commentId', authMiddleware, async (req, res) => {
-    const { _id } = res.locals.user;
+    const { userId } = res.locals.user;
     const { commentId } = req.params;
 
     const targetComment = await Comment.findOne({ _id : commentId });
-    if (targetComment.userId !== _id) {
+    if (targetComment.userId.toHexString() !== userId) {
         return res.json({ result: 'false' , message: "본인의 댓글만 삭제할수있습니다"});
     } else {
         await Comment.deleteOne({ _id : commentId });

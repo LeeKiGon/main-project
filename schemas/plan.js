@@ -69,24 +69,25 @@ PlanSchema.virtual('likeCount', {
     count:true,
 });
 
-PlanSchema.statics.findLikeBookmark = async function (page , user) {
-    const findPaging = await this.find().sort('-createdAt').skip(5 * (page - 1)).limit(5).populate('userId likeCount bookmarkCount', 'snsId email nickname profile_img').exec();
+PlanSchema.statics.findLikeBookmark = async function (foundPlan , user) {
+    // const findPaging = await this.find().sort('-createdAt').skip(5 * (page - 1)).limit(5).populate('userId likeCount bookmarkCount', 'snsId email nickname profile_img').exec();
+    // console.log(this)
     console.log(user)
     if(user === undefined){
-        for (let i = 0; i < findPaging.length; i++) {
-        findPaging[i]._doc.isLike = false;
-        findPaging[i]._doc.isBookmark = false;
+        for (let i = 0; i < foundPlan.length; i++) {
+        foundPlan[i]._doc.isLike = false;
+        foundPlan[i]._doc.isBookmark = false;
         }
-        return findPaging;
+        return foundPlan;
     }
 
-    for (let i = 0; i < findPaging.length; i++) {
-        const LikeUser = await Like.findOne({ userId : user.userId, planId: findPaging[i].planId })
-        const BookMarkUser = await Bookmark.findOne({ userId : user.userId, planId: findPaging[i].planId })
-        LikeUser ? findPaging[i]._doc.isLike = true : findPaging[i]._doc.isLike = false
-        BookMarkUser ? findPaging[i]._doc.isBookmark = true : findPaging[i]._doc.isBookmark = false
+    for (let i = 0; i < foundPlan.length; i++) {
+        const LikeUser = await Like.findOne({ userId : user.userId, planId: foundPlan[i].planId })
+        const BookMarkUser = await Bookmark.findOne({ userId : user.userId, planId: foundPlan[i].planId })
+        LikeUser ? foundPlan[i]._doc.isLike = true : foundPlan[i]._doc.isLike = false
+        BookMarkUser ? foundPlan[i]._doc.isBookmark = true : foundPlan[i]._doc.isBookmark = false
     };
-    return findPaging; 
+    return foundPlan; 
 };
 
 PlanSchema.pre(
