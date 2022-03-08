@@ -14,7 +14,9 @@ const Comments = require('../schemas/comment');
 //미들웨어
 const authMiddleware = require('../middlewares/auth-middleware');
 const { upload } = require('../middlewares/upload')
-const { deleteS3 } = require('../middlewares/deleteS3')
+const { deleteS3 } = require('../middlewares/deleteS3');
+const plan = require('../schemas/plan');
+const { countDocuments } = require('../schemas/user');
 
 /* 메인 페이지 */
 // 전체 여행 불러오기
@@ -29,7 +31,7 @@ router.get('/plans', authMiddleware, async (req, res) => {
     const findPage = await Plan.find({status:'공개'}).sort('-createdAt').skip(5 * (page - 1)).limit(5).populate('userId likeCount bookmarkCount', 'snsId email nickname profile_img')
 
     const plansLikeBookmark = await Plan.findLikeBookmark(findPage, user);
-
+    
     res.json({ plans: plansLikeBookmark, endPage });
 });
 
@@ -71,7 +73,7 @@ router.delete('/plans/:planId/bookmark', authMiddleware, async (req, res) => {
 
 
     const findBookmark = await Bookmark.findOne({planId, userId })
-    if(findBookmark !== null) {
+    if(findBookmark === null) {
         return res.status(401).json({result:'fail', message:'이미 북마크 취소했습니다.'})
     }
 
@@ -115,7 +117,7 @@ router.delete('/plans/:planId/like', authMiddleware, async (req, res) => {
 
 
     const findLike = await Like.findOne({planId, userId })
-    if(findLike !== null) {
+    if(findLike === null) {
         return res.status(401).json({result:'fail', message:'이미 좋아요 취소했습니다.'})
     }
 
