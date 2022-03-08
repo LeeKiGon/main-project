@@ -189,9 +189,9 @@ router.post('/plans/days/:dayId', upload.fields([
 
     // req.files.videoFile ? videoUrl = req.files.videoFile : videoUrl;
     req.files.imageFile ? imageUrl = req.files.imageFile : imageUrl;
-    console.log(address_components);
+    // console.log(address_components);
     const findDay = await Day.findOne({ _id: dayId })
-    console.log(req.body.lat)
+    console.log(findDay)
     const newPlace = new Place({
         planId : findDay.planId,
         dayId,
@@ -211,10 +211,16 @@ router.post('/plans/days/:dayId', upload.fields([
     }
     if (memoText) newPlace.memoText = memoText;
 
-
-
     await newPlace.save();
-    res.json({result:'success', message: '추가 완료 되었습니다.'});
+
+    const newDayFind = await Day.findOne({_id: dayId}).populate('places')
+    console.log("newDayFind :",newDayFind)
+
+    res.json({
+        newDayFind,
+        result:'success',
+        message: '추가 완료 되었습니다.'
+    });
 });
 
 //여행 장소 및 내용 수정하기

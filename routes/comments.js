@@ -133,7 +133,7 @@ router.post('/plans/comments/:commentId/reply', authMiddleware, async (req, res)
         message: '성공',
     });
     
-})
+});
 
 
 //답글 좋아요
