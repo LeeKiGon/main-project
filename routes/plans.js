@@ -23,13 +23,14 @@ router.get('/plans', authMiddleware, async (req, res) => {
     let { page } = req.query;
     console.log(page)
     page === undefined ? page = 1 : +page;
-    const numPlans = await Plan.estimatedDocumentCount(); // 전체 포스트 갯수
-    const wholePages = numPlans === 0 ? 1 : Math.ceil(numPlans / 5); // 5로 나눠서 필요한 페이지 갯수 구하기
-    const findPage = await Plan.find().sort('-createdAt').skip(5 * (page - 1)).limit(5).populate('userId likeCount bookmarkCount', 'snsId email nickname profile_img')
+    const numPlans = await Plan.count({status : '공개'})
+    console.log(numPlans) // 전체 포스트 갯수
+    const endPage = numPlans === 0 ? 1 : Math.ceil(numPlans / 5); // 5로 나눠서 필요한 페이지 갯수 구하기
+    const findPage = await Plan.find({status:'공개'}).sort('-createdAt').skip(5 * (page - 1)).limit(5).populate('userId likeCount bookmarkCount', 'snsId email nickname profile_img')
 
     const plansLikeBookmark = await Plan.findLikeBookmark(findPage, user);
 
-    res.json({ plans: plansLikeBookmark });
+    res.json({ plans: plansLikeBookmark, endPage });
 });
 
 // 북마크 여행 불러오기

@@ -31,7 +31,7 @@ const PlanSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        default: 'private'
+        default: '비공개'
     },
     nickname: {
         type: String
