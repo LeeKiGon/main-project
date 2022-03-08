@@ -105,7 +105,6 @@ router.delete('/plans/:planId/like', authMiddleware, async (req, res) => {
     });
 });
 
-
 /* 여행 후기,작성 페이지 */
 // 여행 생성하기
 router.post('/plans', authMiddleware, async (req, res) => {
@@ -124,7 +123,7 @@ router.post('/plans', authMiddleware, async (req, res) => {
 
     // 여행일정 day 계산 후 저장
     const sDate = new Date(startDate);
-    const eDate = new Date(endDate);
+    const eDate = new Date(endDate); 
 
     const diffDate = sDate.getTime() - eDate.getTime();
     const dateDays = Math.abs(diffDate / (1000 * 3600 * 24));
@@ -179,17 +178,17 @@ router.post('/plans/:planId/public', authMiddleware, async (req, res) => {
 //특정 여행에 장소 추가하기
 router.post('/plans/days/:dayId', upload.fields([
     // { name: 'videoFile', maxCount: 1 },
-    { name: 'imageFile', maxCount: 5 },
+    { name: 'imageFile', maxCount: 10 },
 ]), async (req, res) => {
     const { dayId } = req.params;
-    const { placeName, lat, lng, address, time, memoText } = req.body;
+    const { placeName, lat, lng, address, time, memoText, address_components } = req.body;
 
     // let videoUrl = [];
     let imageUrl = [];
 
     // req.files.videoFile ? videoUrl = req.files.videoFile : videoUrl;
     req.files.imageFile ? imageUrl = req.files.imageFile : imageUrl;
-    
+    console.log(address_components);
     const findDay = await Day.findOne({ _id: dayId })
     console.log(req.body.lat)
     const newPlace = new Place({
@@ -202,7 +201,6 @@ router.post('/plans/days/:dayId', upload.fields([
         address,
         memoText,
     });
-
 
     // for(let i=0; i< videoUrl.length; i++) {
     //     newPlace.memoImage.push(videoUrl[i].location)
@@ -221,7 +219,7 @@ router.post('/plans/days/:dayId', upload.fields([
 //여행 장소 및 내용 수정하기
 router.patch('/plans/days/places/:placeId', authMiddleware, upload.fields([
     // { name: 'videoFile', maxCount: 1 },
-    { name: 'imageFile', maxCount: 5 },
+    { name: 'imageFile', maxCount: 10 },
 ]), async (req, res) => {
     const { placeId } = req.params;
     const { placeName, lat, lng, address, time, memoText } = req.body;
