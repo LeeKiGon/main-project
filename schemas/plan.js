@@ -72,7 +72,7 @@ PlanSchema.virtual('likeCount', {
 PlanSchema.statics.findLikeBookmark = async function (foundPlan , user) {
     // const findPaging = await this.find().sort('-createdAt').skip(5 * (page - 1)).limit(5).populate('userId likeCount bookmarkCount', 'snsId email nickname profile_img').exec();
     // console.log(this)
-    console.log(user)
+    // console.log(user)
     if(user === undefined){
         for (let i = 0; i < foundPlan.length; i++) {
         foundPlan[i]._doc.isLike = false;
@@ -83,9 +83,9 @@ PlanSchema.statics.findLikeBookmark = async function (foundPlan , user) {
 
     for (let i = 0; i < foundPlan.length; i++) {
         const LikeUser = await Like.findOne({ userId : user.userId, planId: foundPlan[i].planId })
-        console.log("likeUser :", LikeUser)
+        // console.log("likeUser :", LikeUser)
         const BookMarkUser = await Bookmark.findOne({ userId : user.userId, planId: foundPlan[i].planId })
-        console.log("BookMarkUser :", BookMarkUser)
+        // console.log("BookMarkUser :", BookMarkUser)
         LikeUser ? foundPlan[i]._doc.isLike = true : foundPlan[i]._doc.isLike = false
         BookMarkUser ? foundPlan[i]._doc.isBookmark = true : foundPlan[i]._doc.isBookmark = false
     };
