@@ -19,7 +19,7 @@ const { deleteS3 } = require('../middlewares/deleteS3')
 /* 메인 페이지 */
 // 전체 여행 불러오기
 router.get('/plans', authMiddleware, async (req, res) => {
-    const {user} = res.locals;
+    const { user } = res.locals;
     let { page } = req.query;
     console.log(page)
     page === undefined ? page = 1 : +page;
@@ -47,6 +47,12 @@ router.post('/plans/:planId/bookmark', authMiddleware, async (req, res) => {
     const { userId } = res.locals.user;
     const { planId } = req.params;
 
+    const findBookmark = await Bookmark.findOne({planId, userId })
+    if(findBookmark !== null) {
+        return res.status(401).json({result:'fail', message:'이미 북마크 추가했습니다.'})
+    }
+
+
     const newBookmark = await Bookmark.create({
         userId,
         planId,
@@ -61,6 +67,12 @@ router.post('/plans/:planId/bookmark', authMiddleware, async (req, res) => {
 router.delete('/plans/:planId/bookmark', authMiddleware, async (req, res) => {
     const { userId } = res.locals.user;
     const { planId } = req.params;
+
+
+    const findBookmark = await Bookmark.findOne({planId, userId })
+    if(findBookmark !== null) {
+        return res.status(401).json({result:'fail', message:'이미 북마크 취소했습니다.'})
+    }
 
         await Bookmark.deleteOne({ 
             userId,
@@ -78,6 +90,12 @@ router.delete('/plans/:planId/bookmark', authMiddleware, async (req, res) => {
 router.post('/plans/:planId/like', authMiddleware, async (req, res) => {
     const { userId } = res.locals.user;
     const { planId } = req.params;
+
+
+    const findLike = await Like.findOne({planId, userId })
+    if(findLike !== null) {
+        return res.status(401).json({result:'fail', message:'이미 좋아요했습니다.'})
+    }
     
     const newLike = await Like.create({
         userId,
@@ -93,6 +111,12 @@ router.post('/plans/:planId/like', authMiddleware, async (req, res) => {
 router.delete('/plans/:planId/like', authMiddleware, async (req, res) => {
     const { userId } = res.locals.user;
     const { planId } = req.params;
+
+
+    const findLike = await Like.findOne({planId, userId })
+    if(findLike !== null) {
+        return res.status(401).json({result:'fail', message:'이미 좋아요 취소했습니다.'})
+    }
 
     await Like.deleteOne({
         userId,
@@ -213,11 +237,11 @@ router.post('/plans/days/:dayId', upload.fields([
 
     await newPlace.save();
 
-    const newDayFind = await Day.findOne({_id: dayId}).populate('places')
-    console.log("newDayFind :",newDayFind)
+    // const newDayFind = await Day.findOne({_id: dayId}).populate('places')
+    // console.log("newDayFind :",newDayFind)
 
     res.json({
-        newDayFind,
+        // newDayFind,
         result:'success',
         message: '추가 완료 되었습니다.'
     });
