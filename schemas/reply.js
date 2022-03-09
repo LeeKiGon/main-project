@@ -19,6 +19,10 @@ const ReplySchema = new mongoose.Schema({
 },
 { timestamps: true });
 
+ReplySchema.virtual('replyId').get(function () {
+    return this._id.toHexString();
+});
+
 ReplySchema.virtual('likeCount', {
     localField: '_id',
     ref: 'Like',
