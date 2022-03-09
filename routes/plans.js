@@ -228,19 +228,27 @@ router.post('/plans/days/:dayId', upload.fields([
     { name: 'imageFile', maxCount: 10 },
 ]), async (req, res) => {
     const { dayId } = req.params;
-    const { placeName, lat, lng, address, time, memoText, address_components } = req.body;
+    const { placeName, lat, lng, address, time, memoText } = req.body;
 
     // let videoUrl = [];
     let imageUrl = [];
 
     // req.files.videoFile ? videoUrl = req.files.videoFile : videoUrl;
-    req.files.imageFile ? imageUrl = req.files.imageFile : imageUrl;
-    address_components.map((v)=> {
-        return console.log(v);
-    })
+    req.files.imageFile ? imageUrl = req.files.imageFile : imageUrl;    
     
-    const findDay = await Day.findOne({ _id: dayId });
-    console.log(findDay);
+    const findDay = await Day.findOne({ _id: dayId })
+    const findPlan = await Plan.findOne({ _id : findDay.planId})
+    console.log(findPlan.planId)
+    if (findPlan.destination === '국내') {
+        const splited = address.split(' ');
+        console.log(splited)
+        findPlan.locations.push(splited[1])
+        findPlan.locations.push(splited[2])
+        console.log(splited[1],splited[2])
+    }
+
+    await findPlan.save();
+
     const newPlace = new Place({
         planId : findDay.planId,
         dayId,
