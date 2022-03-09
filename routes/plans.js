@@ -10,7 +10,7 @@ const Bookmark = require('../schemas/bookmark');
 const Place = require('../schemas/place');
 const Day = require('../schemas/day');
 const Comments = require('../schemas/comment');
-
+//&style=쇼핑
 //미들웨어
 const authMiddleware = require('../middlewares/auth-middleware');
 const { upload } = require('../middlewares/upload');
@@ -21,17 +21,34 @@ const { countDocuments } = require('../schemas/user');
 // 전체 여행 불러오기
 router.get('/plans', authMiddleware, async (req, res) => {
     const { user } = res.locals;
-    let { page } = req.query;
-    console.log(page)
-    page === undefined ? page = 1 : +page;
-    const numPlans = await Plan.count({status : '공개'})
-    console.log(numPlans) // 전체 포스트 갯수
-    const endPage = numPlans === 0 ? 1 : Math.ceil(numPlans / 5); // 5로 나눠서 필요한 페이지 갯수 구하기
-    const findPage = await Plan.find({status:'공개'}).sort('-createdAt').skip(5 * (page - 1)).limit(5).populate('userId likeCount bookmarkCount', 'snsId email nickname profile_img')
-
-    const plansLikeBookmark = await Plan.findLikeBookmark(findPage, user);
+    let { page , style } = req.query;
     
-    res.json({ plans: plansLikeBookmark, endPage });
+    page === undefined || page < 0 ? page = 1 : +page;
+    
+    if(typeof style === 'string') {
+        style = [style];
+    }
+    console.log("스타일 :",style);
+
+    if(style === undefined) {
+        const numPlans = await Plan.count({status : '공개'})
+        console.log(numPlans)
+        const endPage = numPlans === 0 ? 1 : Math.ceil(numPlans / 5);
+        const findPage = await Plan.find({status:'공개'}).sort('-createdAt').skip(5 * (page - 1)).limit(5).populate('userId likeCount bookmarkCount', 'snsId email nickname profile_img')
+
+        const plansLikeBookmark = await Plan.findLikeBookmark(findPage, user);
+
+        return res.json({ plans: plansLikeBookmark, endPage });
+    } 
+    
+
+    const numPlans = await Plan.count({style : {$all : style}, status : '공개'})
+    const endPage = numPlans === 0 ? 1 : Math.ceil(numPlans / 5)
+    const findByStyle = await Plan.find({style : {$all : style}, status : '공개'}).sort('-createdAt').skip(5 * (page - 1)).limit(5).populate('userId likeCount bookmarkCount', 'snsId email nickname profile_img')
+    
+    const plansLikeBookmark = await Plan.findLikeBookmark(findByStyle, user);
+    
+    return res.json({ plans: plansLikeBookmark, endPage });
 });
 
 // 북마크 여행 불러오기
@@ -219,7 +236,7 @@ router.post('/plans/days/:dayId', upload.fields([
 
     // req.files.videoFile ? videoUrl = req.files.videoFile : videoUrl;
     req.files.imageFile ? imageUrl = req.files.imageFile : imageUrl;
-    // console.log(address_components);
+    console.log(address_components);
     const findDay = await Day.findOne({ _id: dayId })
     console.log(findDay)
     const newPlace = new Place({
