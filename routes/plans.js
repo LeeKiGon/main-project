@@ -131,7 +131,6 @@ router.delete('/plans/:planId/like', authMiddleware, async (req, res) => {
     const { userId } = res.locals.user;
     const { planId } = req.params;
 
-
     const findLike = await Like.findOne({ planId, userId })
     if(findLike === null) {
         return res.status(401).json({ result:'fail', message:'이미 좋아요 취소했습니다.'})
@@ -236,9 +235,12 @@ router.post('/plans/days/:dayId', upload.fields([
 
     // req.files.videoFile ? videoUrl = req.files.videoFile : videoUrl;
     req.files.imageFile ? imageUrl = req.files.imageFile : imageUrl;
-    console.log(address_components);
-    const findDay = await Day.findOne({ _id: dayId })
-    console.log(findDay)
+    address_components.map((v)=> {
+        return console.log(v);
+    })
+    
+    const findDay = await Day.findOne({ _id: dayId });
+    console.log(findDay);
     const newPlace = new Place({
         planId : findDay.planId,
         dayId,
