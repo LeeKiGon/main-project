@@ -15,12 +15,15 @@ const Comment = require('../schemas/comment');
 const authMiddleware = require('../middlewares/auth-middleware');
 
 //여행에 달린 댓글 조회
-router.get('/plans/:planId/comments', async (req, res) => {
+router.get('/plans/:planId/comments', authMiddleware, async (req, res) => {
+    const { user } = res.locals;
     const { planId } = req.params;
     const comments = await Comment.find({ planId }).populate('likeCount userId').populate({
         path: 'replies', populate :{ path : 'userId likeCount' }
     });
-    res.json({ comments }); 
+
+    const commentLike = await Comment.findLike(comments, user)
+    res.json({ comments: commentLike }); 
 });
 
 //여행 댓글 작성
@@ -109,7 +112,7 @@ router.delete('/plans/comments/:commentId/like', authMiddleware, async (req, res
 
     const findLike = await Like.findOne({ commentId, userId })
     if(findLike === null) {
-        return res.status(401).json({ result:'fail', message:'이미 좋아요 취소했습니다.'})
+        return res.status(401).json({ result:'fail', message:'이미 좋아요 취소했습니다.'});
     }
 
     await Like.deleteOne({
@@ -157,7 +160,7 @@ router.post('/plans/comments/replies/:replyId/like', authMiddleware, async (req,
     }
 
     const newLike = await Like.create({
-        uerIds,
+        userId,
         replyId,
     });
     res.json({

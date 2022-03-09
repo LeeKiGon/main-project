@@ -13,9 +13,8 @@ const Comments = require('../schemas/comment');
 
 //미들웨어
 const authMiddleware = require('../middlewares/auth-middleware');
-const { upload } = require('../middlewares/upload')
+const { upload } = require('../middlewares/upload');
 const { deleteS3 } = require('../middlewares/deleteS3');
-const plan = require('../schemas/plan');
 const { countDocuments } = require('../schemas/user');
 
 /* 메인 페이지 */

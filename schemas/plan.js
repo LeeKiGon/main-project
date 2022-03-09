@@ -89,7 +89,7 @@ PlanSchema.statics.findLikeBookmark = async function (foundPlan , user) {
         LikeUser ? foundPlan[i]._doc.isLike = true : foundPlan[i]._doc.isLike = false
         BookMarkUser ? foundPlan[i]._doc.isBookmark = true : foundPlan[i]._doc.isBookmark = false
     };
-    return foundPlan; 
+    return foundPlan;
 };
 
 PlanSchema.pre(
