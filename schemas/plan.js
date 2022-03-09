@@ -36,6 +36,9 @@ const PlanSchema = new mongoose.Schema({
     nickname: {
         type: String
     },
+    thumbnailImage: {
+        type: String
+    },
     startDate: {
         type: String
     },
