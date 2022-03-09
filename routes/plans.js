@@ -24,25 +24,27 @@ router.get('/plans', authMiddleware, async (req, res) => {
     let { page , destination, style } = req.query;
 
     page === undefined || page < 0 ? page = 1 : +page;
-    
+    destination === undefined ? destination = ['국내','해외'] : destination = [detination];
+
     if(typeof style === 'string') {
         style = [style];
     }
     console.log("스타일 :",style);
 
+    //카테고리 아무것도 선택 안했을 때
     if(style === undefined) {
-        const numPlans = await Plan.count({status : '공개'})
+        const numPlans = await Plan.count({detination : {$all : destination},status : '공개'})
         console.log(numPlans)
         const endPage = numPlans === 0 ? 1 : Math.ceil(numPlans / 5);
-        const findPage = await Plan.find({status:'공개'}).sort('-createdAt').skip(5 * (page - 1)).limit(5).populate('userId likeCount bookmarkCount', 'snsId email nickname profile_img')
+        const findPage = await Plan.find({detination : {$all : destination}, status:'공개'}).sort('-createdAt').skip(5 * (page - 1)).limit(5).populate('userId likeCount bookmarkCount', 'snsId email nickname profile_img')
 
         const plansLikeBookmark = await Plan.findLikeBookmark(findPage, user);
 
         return res.json({ plans: plansLikeBookmark, endPage });
     } 
     
-
-    const numPlans = await Plan.count({style : {$all : style}, status : '공개'})
+    //카테고리 선택했을 때
+    const numPlans = await Plan.count({destination: {$all : destination}, style : {$all : style}, status : '공개'})
     const endPage = numPlans === 0 ? 1 : Math.ceil(numPlans / 5)
     const findByStyle = await Plan.find({style : {$all : style}, status : '공개'}).sort('-createdAt').skip(5 * (page - 1)).limit(5).populate('userId likeCount bookmarkCount', 'snsId email nickname profile_img')
     
@@ -51,31 +53,43 @@ router.get('/plans', authMiddleware, async (req, res) => {
     return res.json({ plans: plansLikeBookmark, endPage });
 });
 
-// //검색하기
-// router.get('/plans/search', authMiddleware, async (req, res) => {
-//     const { user } = res.locals;
-//     let { page , query } = req.query;
+//검색하기
+router.get('/plans/search', authMiddleware, async (req, res) => {
+    const { user } = res.locals;
+    let { page , query, style } = req.query;
 
-//     page === undefined || page < 0 ? page = 1 : +page;
+    page === undefined || page < 0 ? page = 1 : +page;
+    if(style === undefined) {
+        const numPlans = await Plan.count({$or: [{ title: { $regex: query } },{ locations: {$regex : query} }], status : '공개'})
+        console.log(numPlans)
+        const endPage = numPlans === 0 ? 1 : Math.ceil(numPlans / 5);
+        const findPage = await Plan.find({$or: [{ title: { $regex: query } },{ locations: {$regex : query} }], status : '공개'}).sort('-createdAt').skip(5 * (page - 1)).limit(5).populate('userId likeCount bookmarkCount', 'snsId email nickname profile_img')
 
-//     const numPlans = await Plan.count({style : {$all : style}, status : '공개'})
-//     const endPage = numPlans === 0 ? 1 : Math.ceil(numPlans / 5)
-//     const findByStyle = await Plan.find({style : {$all : style}, status : '공개'}).sort('-createdAt').skip(5 * (page - 1)).limit(5).populate('userId likeCount bookmarkCount', 'snsId email nickname profile_img')
+        const plansLikeBookmark = await Plan.findLikeBookmark(findPage, user);
+
+        return res.json({ plans: plansLikeBookmark, endPage });
+    } 
+
     
-//     const plansLikeBookmark = await Plan.findLikeBookmark(findByStyle, user);
+    const numPlans = await Plan.count({ style : {$all : style}, status : '공개', $or: [{ title: { $regex: query }},{ locations: {$regex : query }}]})
     
-//     return res.json({ plans: plansLikeBookmark, endPage });
+    console.log(numPlans)
+    const endPage = numPlans === 0 ? 1 : Math.ceil(numPlans / 5)
+    const findByStyle = await Plan.find({ $or: [{ title: { $regex: query } },{ locations: { $regex : query }}],style : {$all : style}, status : '공개'}).sort('-createdAt').skip(5 * (page - 1)).limit(5).populate('userId likeCount bookmarkCount', 'snsId email nickname profile_img')
+    
+    const plansLikeBookmark = await Plan.findLikeBookmark(findByStyle, user);
+    
+    return res.json({ plans: plansLikeBookmark, endPage });
 
-
-// });
+});
 
 // 북마크 여행 불러오기
 router.get('/plans/bookmark', authMiddleware, async (req, res) => {
     const { userId } = res.locals.user;
 
-    const findBookmarks = await Bookmark.find({ userId }).populate('planId');
+    const findBookmarks = await Bookmark.find({ userId }).populate({path : 'planId', populate: {path : 'userId'}})
 
-    res.json({ plans: findBookmarks });
+    res.json({ plans: findBookmarks })
 });
 
 // 특정 여행 북마크 추가
