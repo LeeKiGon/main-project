@@ -10,7 +10,7 @@ const Bookmark = require('../schemas/bookmark');
 const Place = require('../schemas/place');
 const Day = require('../schemas/day');
 const Comments = require('../schemas/comment');
-//&style=쇼핑
+
 //미들웨어
 const authMiddleware = require('../middlewares/auth-middleware');
 const { upload } = require('../middlewares/upload');
@@ -243,7 +243,7 @@ router.post('/plans/:planId/public', authMiddleware, async (req, res) => {
     const { status } = req.body;
 
     const findPlan = await Plan.findOne({ _id: planId })
-    if(findPlan.userId !== userId) {
+    if(findPlan.userId.toHexString() !== userId) {
         return res.status(401).json({ result: 'fail', message: '본인의 여행만 변경할수 있습니다.' });
     }
 
