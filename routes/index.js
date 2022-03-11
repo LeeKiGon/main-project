@@ -26,7 +26,6 @@ console.log(ROUTE)
 //     chatsRouter,
 // ]);
 
-router.use(ROUTE.INDEX, plansRouter);
 router.use(ROUTE.INDEX, placesRouter);
 router.use(ROUTE.INDEX, commentsRouter);
 router.use(ROUTE.INDEX, likesRouter);
@@ -35,6 +34,6 @@ router.use(ROUTE.INDEX, bookmarksRouter);
 router.use(ROUTE.INDEX, repliesRouter);
 router.use(ROUTE.INDEX, searchRouter);
 router.use(ROUTE.INDEX, chatsRouter);
-
+router.use(ROUTE.INDEX, plansRouter);
 
 module.exports = router;
