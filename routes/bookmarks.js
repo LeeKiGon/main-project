@@ -1,21 +1,16 @@
 const express = require('express');
 const router = express.Router();
+const bookmarkController = require('../controller/bookmark')
 
 //스키마
 const Bookmark = require('../models/bookmark');
 
 //미들웨어
 const authMiddleware = require('../middlewares/auth-middleware');
-// const { countDocuments } = require('../models/user');
+const { ROUTE } = require("../config/constants");
 
 // 북마크 여행 불러오기
-router.get('/plans/bookmark', authMiddleware, async (req, res) => {
-    const { userId } = res.locals.user;
-
-    const findBookmarks = await Bookmark.find({ userId }).populate({path : 'planId', populate: {path : 'userId'}})
-
-    res.json({ plans: findBookmarks })
-});
+router.get(ROUTE.BOOKMARK.FIND, authMiddleware, bookmarkController.findBookmark);
 
 // 특정 여행 북마크 추가
 router.post('/plans/:planId/bookmark', authMiddleware, async (req, res) => {

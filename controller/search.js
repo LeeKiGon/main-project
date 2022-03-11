@@ -1,0 +1,1 @@
+const SearchService = require('../services/search');

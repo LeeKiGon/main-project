@@ -26,6 +26,9 @@ const DIRECTORY = {
 
 const ROUTE = {
     INDEX: '/',
+    BOOKMARK: {
+        FIND : '/plans/bookmark'
+    },
 };
 
 module.exports = {

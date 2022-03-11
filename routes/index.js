@@ -14,17 +14,7 @@ const chatsRouter = require('./chats');
 const { ROUTE } = require("../config/constants");
 
 console.log(ROUTE)
-// router.use('/', [
-//     plansRouter,
-//     placesRouter,
-//     commentsRouter,
-//     likesRouter,
-//     AuthRouter,
-//     bookmarksRouter,
-//     repliesRouter,
-//     searchRouter,
-//     chatsRouter,
-// ]);
+
 
 router.use(ROUTE.INDEX, placesRouter);
 router.use(ROUTE.INDEX, commentsRouter);
