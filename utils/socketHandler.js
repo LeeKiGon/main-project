@@ -5,41 +5,10 @@ const io = require('../config/socket').getIo();
 
 // const { SOCKET_EVENT: EVENT, DIRECTORY } = require("../config/constants");
 
-const EVENT = {
-    CONNECTION: 'connection',
-    DISCONNECT: 'disconnect',
-    ERROR: 'error',
-    JOIN_ROOM: 'joinRoom',
-    LEAVE_ROOM: 'leaveRoom',
-    ROOM: 'room',
-    LIST: 'list',
-    FILE: 'file',
-    CHAT: 'chat',
-    LOGIN: 'login',
-};
-
-const DIRECTORY = {
-    CATEGORY_URL: 'categoryUrl',
-    CHAT_IMAGES: 'chatImages',
-    CHAT_TRACKS: 'chatTracks',
-    ETC: 'etc',
-    IMAGES: 'images',
-    TRACKS: 'tracks',
-    TRACK_THUMBNAIL: 'trackThumbnail',
-    UNTRACKS: 'untracks',
-    AUDIO: 'audio',
-    IPHONE: 'iphone',
-    IMAGE: 'image',
-    CATEGORYALL: '전체',
-    CATEGORYALLTEXT: '최근에 올라온 목소리',
-    CHAT_TYPE: 'text',
-    TIMEOUT: '10s',
-};
-
 io.on('connection', (socket) => {
-    console.log(`User : ${socket.id}`)
+    console.log(`User : ${socket.id}`);
     socket.on('disconnect', () => {
-        clearInterval(socket.interval);        
+        clearInterval(socket.interval);
     });
 
     // socket error
@@ -64,7 +33,11 @@ io.on('connection', (socket) => {
     socket.on('joinRoom', async ({ fromSnsId, toSnsId }) => {
         try {
             const roomNum = await roomNumMaker(fromSnsId, toSnsId);
-            await chatService.findAndUpdateChatRoom({ fromSnsId, toSnsId, roomNum });
+            await chatService.findAndUpdateChatRoom({
+                fromSnsId,
+                toSnsId,
+                roomNum,
+            });
             socket.join(roomNum);
             socket.leave(fromSnsId);
         } catch (error) {
@@ -115,19 +88,19 @@ io.on('connection', (socket) => {
         }
     });
 
-//     // socket file (track, image) post
-//     socket.on('file', async ({ receiveUserId, sendUserId, chatType }) => {
-//         try {
-//             const roomNum = await roomNumMaker(sendUserId, receiveUserId);
-//             const getChat = await chatService.getChatByIds({
-//                 receiveUserId,
-//                 sendUserId,
-//                 chatType,
-//             });
-//             io.to(roomNum).emit('chat', getChat);
-//             io.to(receiveUserId).emit('list', getChat);
-//         } catch (error) {
-//             console.log(error);
-//         }
-//     });
+    //     // socket file (track, image) post
+    //     socket.on('file', async ({ receiveUserId, sendUserId, chatType }) => {
+    //         try {
+    //             const roomNum = await roomNumMaker(sendUserId, receiveUserId);
+    //             const getChat = await chatService.getChatByIds({
+    //                 receiveUserId,
+    //                 sendUserId,
+    //                 chatType,
+    //             });
+    //             io.to(roomNum).emit('chat', getChat);
+    //             io.to(receiveUserId).emit('list', getChat);
+    //         } catch (error) {
+    //             console.log(error);
+    //         }
+    //     });
 });
