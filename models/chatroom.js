@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const ChatroomSchema = new mongoose.Schema({
+const ChatRoomSchema = new mongoose.Schema({
     roomNumber: {
         type: Number,
     },
@@ -13,10 +13,15 @@ const ChatroomSchema = new mongoose.Schema({
         ref: 'User',
     },
     lastChat: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'ChatMessage',
     },
 },
 {timestamps: true});
 
+ChatRoomSchema.virtual('chatRoomId').get(function () {
+    return this._id.toHexString();
+});
 
-module.exports = mongoose.model('Chatroom', ChatroomSchema);
+
+module.exports = mongoose.model('ChatRoom', ChatRoomSchema);

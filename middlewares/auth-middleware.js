@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-const User = require('../schemas/user')
+const User = require('../models/user')
 const { JWT_SECRET_KEY } = process.env
 
 module.exports = (req, res, next) => {
