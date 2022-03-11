@@ -144,6 +144,10 @@ const getChatRoomList = async ({ userId }) => {
 
 // 채팅을 읽었는지 확인하는 api
 const checkChat = async ({ userId }) => {
+    const test = await User.findOne({_id: userId}).populate('chatRooms')
+
+    console.log(test);
+
     const findChatRoomList = await ChatRoom.find({
         $or: [{ userId }, { userId2: userId }],
     }).populate({

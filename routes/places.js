@@ -78,7 +78,7 @@ router.post(
 );
 
 //여행 장소 및 내용 수정하기
-router.patch(
+router.post(
     '/plans/days/places/:placeId',
     authMiddleware,
     upload.fields([

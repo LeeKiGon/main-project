@@ -1,20 +1,20 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
     snsId: {
-        type: String
+        type: String,
     },
     email: {
-        type: String
+        type: String,
     },
-    nickname:{
-        type: String
+    nickname: {
+        type: String,
     },
     profile_img: {
-        type: String
+        type: String,
     },
     provider: {
-        type: String
+        type: String,
     },
 });
 
@@ -22,23 +22,29 @@ UserSchema.virtual('userId').get(function () {
     return this._id.toHexString();
 });
 
-UserSchema.virtual('plans',{
+UserSchema.virtual('plans', {
     ref: 'Plan',
     localField: '_id',
     foreignField: 'userId',
-})
+});
 
-UserSchema.virtual('likes',{
+UserSchema.virtual('chatRooms', {
+    ref: 'ChatRoom',
+    localField: '_id',
+    foreignField: 'userId'
+});
+
+UserSchema.virtual('likes', {
     ref: 'Like',
     localField: '_id',
     foreignField: 'userId',
-})
+});
 
-UserSchema.virtual('bookmarks',{
+UserSchema.virtual('bookmarks', {
     ref: 'Bookmark',
     localField: '_id',
     foreignField: 'userId',
-})
+});
 
 UserSchema.set('toJSON', { virtuals: true });
 UserSchema.set('toObject', { virtuals: true });

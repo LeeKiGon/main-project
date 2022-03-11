@@ -104,6 +104,7 @@ router.get('/auth/kakao/callback', (req, res, next) => {
 //     )(req, res, next);
 //   };
 
+//나의 정보 보기
 router.get('/users/auth/me', authMiddleware, async (req, res) => {
     const { user } = res.locals;
     res.json({
@@ -113,6 +114,21 @@ router.get('/users/auth/me', authMiddleware, async (req, res) => {
         nickname: user.nickname,
         userImg: user.profile_img,
     });
+});
+
+// 유저 프로필 조회
+router.get('/users/:userId', authMiddleware, async (req, res) => {
+    const { user } = res.locals;
+    const { userId } = req.params;
+
+    const loginUser = await User.findOne({ snsId: user.snsId }).populate('plans');
+    const findUser = await User.findOne({ _id: userId }).populate({path: 'plans', match : {status:'공개'}});
+
+    if (loginUser.userId === findUser.userId) {
+        return res.json({ result: 'success', userInfo: loginUser })
+    } else {
+        return res.json({ result: 'success', userInfo: findUser });
+    }
 });
 
 module.exports = router;
