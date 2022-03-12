@@ -7,7 +7,6 @@ const Place = require('../models/place');
 const Day = require('../models/day');
 const Comment = require('../models/comment');
 
-
 const PlanSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,

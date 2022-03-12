@@ -18,7 +18,7 @@ router.get('/chat/list', authMiddleware, chatController.getChatListByUserId);
 router.get('/chat/new', authMiddleware, chatController.checkNewChat);
 
 // 해당 채팅방 내용 가져오기
-router.get('/chat/:toSnsId', authMiddleware, chatController.getChatMessageByIds);
+router.get('/chat/:toSnsId', authMiddleware, chatController.getChatMessageByIds); 
 
 // 채팅으로 이미지파일 보내기
 // // router.post(ROUTE.CHAT.IMAGE, imageUploader, chatController.postImage);

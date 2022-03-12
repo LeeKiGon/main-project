@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
 
 const ChatRoomSchema = new mongoose.Schema({
-    roomNumber: {
-        type: Number,
+    roomNum: {
+        type: String,
     },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
