@@ -1,14 +1,14 @@
 const Place = require('../models/place');
 const Day = require('../models/day');
-const Plan = require('../models/reply');
+const Plan = require('../models/plan');
 
 
 //여행 일정 생성
-const createplaces = async ({ dayId, placeName, lat, lng, address, time, memoText, gemotry }) => {
+const createplaces = async ({ dayId, placeName, lat, lng, address, time, memoText, gemotry, imageUrl}) => {
 
         const findDay = await Day.findOne({ _id: dayId });
         const findPlan = await Plan.findOne({ _id: findDay.planId });
-
+        console.log(address)
         if (findPlan.destination === '국내') {
             const splited = address.split(' ');
             findPlan.locations.push(splited[1]);
