@@ -4,7 +4,7 @@ const Plan = require('../models/reply');
 
 
 //여행 일정 생성
-const createplaces = async ({ dayId, placeName, lat, lng, address, time, memoText }) => {
+const createplaces = async ({ dayId, placeName, lat, lng, address, time, memoText, gemotry }) => {
 
         const findDay = await Day.findOne({ _id: dayId });
         const findPlan = await Plan.findOne({ _id: findDay.planId });
@@ -32,6 +32,7 @@ const createplaces = async ({ dayId, placeName, lat, lng, address, time, memoTex
             lng,
             address,
             memoText,
+            gemotry,
         });
 
         // for(let i=0; i< videoUrl.length; i++) {
