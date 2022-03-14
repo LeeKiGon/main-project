@@ -31,12 +31,6 @@ const PlaceSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
-    geometry_viewport: {
-        type: Array
-    },
-    geometry_location: {
-        type: Array
-    }
 },
 { timestamps: true });
 

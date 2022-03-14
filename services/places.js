@@ -4,7 +4,7 @@ const Plan = require('../models/plan');
 
 
 //여행 일정 생성
-const createplaces = async ({ dayId, placeName, lat, lng, address, time, memoText, imageUrl, geometry_viewport, geometry_location}) => {
+const createplaces = async ({ dayId, placeName, lat, lng, address, time, memoText, imageUrl }) => {
 
         const findDay = await Day.findOne({ _id: dayId });
         const findPlan = await Plan.findOne({ _id: findDay.planId });
@@ -30,9 +30,7 @@ const createplaces = async ({ dayId, placeName, lat, lng, address, time, memoTex
             lat,
             lng,
             address,
-            memoText,
-            geometry_viewport,
-            geometry_location
+            memoText
         });
 
         // for(let i=0; i< videoUrl.length; i++) {
@@ -51,11 +49,11 @@ const createplaces = async ({ dayId, placeName, lat, lng, address, time, memoTex
         return;
     }
 //여행 일정 수정
-const updataplaces = async ({ placeId, placeName, lat, lng, address, time, memoText, geometry_viewport, imageUrl, geometry_location }) => {    
+const updataplaces = async ({ placeId, placeName, lat, lng, address, time, memoText, imageUrl }) => {    
 
         const findPlace = await Place.findOneAndUpdate(
             { _id: placeId },
-            { placeName, lat, lng, address, time, memoText, geometry_viewport, geometry_location, imageUrl }
+            { placeName, lat, lng, address, time, memoText, imageUrl }
         );
 
         // for(let i=0; i< videoUrl.length; i++) {
