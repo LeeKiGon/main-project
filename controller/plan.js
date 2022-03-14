@@ -42,7 +42,7 @@ const changePlanStatus = async (req, res) => {
     if(findPlan.userId.toHexString() !== userId) {
         return res.status(401).json({ result: 'fail', message: '본인의 여행만 변경할수 있습니다.' });
     }
-    await planService.changePlanByPlanId({findPlan, status});
+    await planService.changePlanByPlanId(findPlan, status);
     
 
     return res.status(200).json({ result : 'success', message: '변경 완료 되었습니다.' })
