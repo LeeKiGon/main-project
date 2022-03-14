@@ -30,9 +30,6 @@ const PlaceSchema = new mongoose.Schema({
     memoText: {
         type: String,
         default: ''
-    },
-    geometry_viewport: {
-        type: Array
     }
 },
 { timestamps: true });

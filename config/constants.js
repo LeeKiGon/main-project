@@ -57,6 +57,7 @@ const ROUTE = {
         CHANGE_STATUS: '/plans/:planId/public',
         DELETE: '/plans/:planId',
         GET_MY: '/myplans',
+        ADD_THUMBNAIL: '/plans/:planId/thumbnail'
     },
     AUTH: {
         KAKAO : '/auth/kakao',

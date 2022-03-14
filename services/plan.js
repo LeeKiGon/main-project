@@ -120,17 +120,25 @@ const findOnePlanByPlanIdisLikeBookMark = async ({ user, planId }) => {
     return planLikeBookmark[0];
 };
 
-const changePlanByPlanId = async (targetPlan, status) => {
+const changePlanByPlanId = async ({ findPlan, status }) => {
+    findPlan.status = status;
 
-    targetPlan.status = status;
-
-    await targetPlan.save();
+    await findPlan.save();
     return;
 };
 
 const deletePlanByPlanId = async ({ planId }) => {
     await Plan.deleteOne({ _id: planId });
     return;
+};
+
+const addThumbnail = async ({ thumbnailImage, planId }) => {
+    try {
+        await Plan.updateOne({ _id: planId }, { $set: { thumbnailImage } });
+        return;
+    } catch (error) {
+        throw error;
+    }
 };
 
 module.exports = {
@@ -141,4 +149,5 @@ module.exports = {
     deletePlanByPlanId,
     findOnePlanByPlanId,
     findAllPlanByUserId,
+    addThumbnail,
 };

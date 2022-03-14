@@ -1,26 +1,33 @@
 const express = require('express');
 const router = express.Router();
-const planController = require('../controller/plan')
+const planController = require('../controller/plan');
 
 //미들웨어
 const authMiddleware = require('../middlewares/auth-middleware');
+const { upload } = require('../middlewares/upload');
+const imageUploder = upload.single('imageFile');
 
-
-const { ROUTE } = require("../config/constants");
-
+const { ROUTE } = require('../config/constants');
 
 // 전체 여행 불러오기
-router.get(ROUTE.PLAN.GET_ALL, authMiddleware, planController.getAllPlans)
+router.get(ROUTE.PLAN.GET_ALL, authMiddleware, planController.getAllPlans);
 // 여행 생성하기
-router.post(ROUTE.PLAN.ADD, authMiddleware, planController.addNewPlan)
+router.post(ROUTE.PLAN.ADD, authMiddleware, planController.addNewPlan);
 // 특정여행 불러오기
-router.get(ROUTE.PLAN.GET, authMiddleware, planController.getPlanByPlanId)
+router.get(ROUTE.PLAN.GET, authMiddleware, planController.getPlanByPlanId);
 // 공개 / 비공개 설정
-router.post(ROUTE.PLAN.CHANGE_STATUS, authMiddleware, planController.changePlanStatus)
+router.post(
+    ROUTE.PLAN.CHANGE_STATUS,
+    authMiddleware,
+    planController.changePlanStatus
+);
 // 특정 여행 삭제
-router.delete(ROUTE.PLAN.DELETE, authMiddleware, planController.deletePlan)
-// 나의 여행 불러오기
-router.get(ROUTE.PLAN.GET_MY, authMiddleware, planController.getMyPlans)
+router.delete(ROUTE.PLAN.DELETE, authMiddleware, planController.deletePlan);
+// 썸네일 사진 추가하기
+router.post(ROUTE.PLAN.ADD_THUMBNAIL, authMiddleware, imageUploder, planController.addNewThumbnail);
+// 나의 여행불러오기
+router.get(ROUTE.PLAN.GET_MY, authMiddleware, planController.getMyPlans);
+//
 
 // router.get('/plans', authMiddleware, async (req, res) => {
 //     const { user } = res.locals;
@@ -44,18 +51,17 @@ router.get(ROUTE.PLAN.GET_MY, authMiddleware, planController.getMyPlans)
 //         const plansLikeBookmark = await Plan.findLikeBookmark(findPage, user);
 
 //         return res.json({ plans: plansLikeBookmark, endPage });
-//     } 
-    
+//     }
+
 //     //카테고리 선택했을 때
 //     const numPlans = await Plan.count({destination: {$all : destination}, style : {$all : style}, status : '공개'})
 //     const endPage = numPlans === 0 ? 1 : Math.ceil(numPlans / 5)
 //     const findByStyle = await Plan.find({style : {$all : style}, status : '공개'}).sort('-createdAt').skip(5 * (page - 1)).limit(5).populate('userId likeCount bookmarkCount', 'snsId email nickname profile_img')
-    
+
 //     const plansLikeBookmark = await Plan.findLikeBookmark(findByStyle, user);
-    
+
 //     return res.json({ plans: plansLikeBookmark, endPage });
 // });
-
 
 // /* 여행 후기,작성 페이지 */
 // // 여행 생성하기
@@ -75,7 +81,7 @@ router.get(ROUTE.PLAN.GET_MY, authMiddleware, planController.getMyPlans)
 
 //     // 여행일정 day 계산 후 저장
 //     const sDate = new Date(startDate);
-//     const eDate = new Date(endDate); 
+//     const eDate = new Date(endDate);
 
 //     const diffDate = sDate.getTime() - eDate.getTime();
 //     const dateDays = Math.abs(diffDate / (1000 * 3600 * 24));
@@ -92,7 +98,7 @@ router.get(ROUTE.PLAN.GET_MY, authMiddleware, planController.getMyPlans)
 
 //     res.json({
 //         result: 'success',
-//         message: "성공", 
+//         message: "성공",
 //         planId: newPlan.planId });
 // });
 
@@ -107,9 +113,9 @@ router.get(ROUTE.PLAN.GET_MY, authMiddleware, planController.getMyPlans)
 
 //     const planLikeBookmark = await Plan.findLikeBookmark([plan], user)
 
-//     res.json({ 
+//     res.json({
 //         result: 'success',
-//         message: "성공", 
+//         message: "성공",
 //         plan : planLikeBookmark[0]
 //     });
 // });
