@@ -99,4 +99,6 @@ module.exports = {
     findOnePlanByPlanIdisLikeBookMark,
     changePlanByPlanId,
     deletePlanByPlanId,
+    findOnePlanByPlanId,
+    findAllPlanByUserId,
 }

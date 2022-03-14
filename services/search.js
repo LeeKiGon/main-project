@@ -1,7 +1,7 @@
 const Plan = require('../models/plan');
 
 const getSearch = async ({ page, query, style, user }) => {
-
+    console.log(query);
     page === undefined || page < 0 ? (page = 1) : +page;
     if (style === undefined) {
         const numPlans = await Plan.count({
@@ -30,7 +30,7 @@ const getSearch = async ({ page, query, style, user }) => {
 
         const plansLikeBookmark = await Plan.findLikeBookmark(findPage, user);
 
-        return ({ plans: plansLikeBookmark, endPage });
+        return { plans: plansLikeBookmark, endPage };
         // return res.json({ plans: plansLikeBookmark, endPage });
     }
 
@@ -56,10 +56,10 @@ const getSearch = async ({ page, query, style, user }) => {
         );
 
     const plansLikeBookmark = await Plan.findLikeBookmark(findByStyle, user);
-    
-    return ({ plans: plansLikeBookmark, endPage })
+
+    return { plans: plansLikeBookmark, endPage };
     // return res.json({ plans: plansLikeBookmark, endPage });
-}
+};
 
 module.exports = {
     getSearch,

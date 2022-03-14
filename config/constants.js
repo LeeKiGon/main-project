@@ -43,7 +43,7 @@ const ROUTE = {
         DELETE: '/plans/:planId/:commentId'
     },
     SEARCH: {
-        SEATCH: '/plans/search',
+        SEARCH: '/plans/search',
     },
     REPLIES: {
         ADD: '/plans/comments/:commentId/reply',

@@ -10,6 +10,6 @@ const authMiddleware = require('../middlewares/auth-middleware');
 const { ROUTE } = require('../config/constants');
 
 //검색하기
-router.get(ROUTE.SEARCH, authMiddleware, searchController.Search);
+router.get(ROUTE.SEARCH.SEARCH, authMiddleware, searchController.Search);
 
 module.exports = router;
