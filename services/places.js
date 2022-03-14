@@ -4,11 +4,10 @@ const Plan = require('../models/plan');
 
 
 //여행 일정 생성
-const createplaces = async ({ dayId, placeName, lat, lng, address, time, memoText, gemotry, imageUrl}) => {
+const createplaces = async ({ dayId, placeName, lat, lng, address, time, memoText, imageUrl, geometry_viewport}) => {
 
         const findDay = await Day.findOne({ _id: dayId });
         const findPlan = await Plan.findOne({ _id: findDay.planId });
-        console.log(address)
         if (findPlan.destination === '국내') {
             const splited = address.split(' ');
             findPlan.locations.push(splited[1]);
@@ -32,7 +31,7 @@ const createplaces = async ({ dayId, placeName, lat, lng, address, time, memoTex
             lng,
             address,
             memoText,
-            gemotry,
+            geometry_viewport
         });
 
         // for(let i=0; i< videoUrl.length; i++) {
@@ -51,11 +50,11 @@ const createplaces = async ({ dayId, placeName, lat, lng, address, time, memoTex
         return;
     }
 //여행 일정 수정
-const updataplaces = async ({ placeId, placeName, lat, lng, address, time, memoText }) => {    
+const updataplaces = async ({ placeId, placeName, lat, lng, address, time, memoText, geometry_viewport, imageUrl }) => {    
 
         const findPlace = await Place.findOneAndUpdate(
             { _id: placeId },
-            { placeName, lat, lng, address, time, memoText }
+            { placeName, lat, lng, address, time, memoText, geometry_viewport, imageUrl }
         );
 
         // for(let i=0; i< videoUrl.length; i++) {

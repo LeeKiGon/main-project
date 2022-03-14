@@ -4,14 +4,14 @@ const PlacesService = require('../services/places');
 const postplaces = async (req, res, next) => {
 try{
     const { dayId } = req.params;
-    const { placeName, lat, lng, address, time, memoText, gemotry } = req.body;
+    const { placeName, lat, lng, address, time, memoText, geometry_viewport } = req.body;
     // console.log(req.files.imageFile)
     // let videoUrl = [];
     let imageUrl = [];
 
     // req.files.videoFile ? videoUrl = req.files.videoFile : videoUrl;
     req.files.imageFile ? (imageUrl = req.files.imageFile) : imageUrl;
-    const Places = await PlacesService.createplaces({ dayId, placeName, lat, lng, address, time, memoText, gemotry, imageUrl });
+    const Places = await PlacesService.createplaces({ dayId, placeName, lat, lng, address, time, memoText, geometry_viewport, imageUrl });
 
     return res.json({ result: 'success', message: '작성 완료' });
 
@@ -24,7 +24,7 @@ try{
 const patchplaces = async (req, res, next) => {
     try{
         const { placeId } = req.params;
-        const { placeName, lat, lng, address, time, memoText } = req.body;
+        const { placeName, lat, lng, address, time, memoText, geometry_viewport } = req.body;
 
         // let videoUrl = [];
         let imageUrl = [];
@@ -32,7 +32,7 @@ const patchplaces = async (req, res, next) => {
         // req.files.videoFile ? videoUrl = req.files.videoFile : videoUrl;
         req.files.imageFile ? (imageUrl = req.files.imageFile) : imageUrl;
 
-        const Places = await PlacesService.createplaces({ placeId, placeName, lat, lng, address, time, memoText });
+        const Places = await PlacesService.createplaces({ placeId, placeName, lat, lng, address, time, memoText, geometry_viewport});
 
         return res.json({ result: 'success', message: '작성 완료' });
 
