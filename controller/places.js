@@ -4,7 +4,7 @@ const PlacesService = require('../services/places');
 const postplaces = async (req, res, next) => {
 try{
     const { dayId } = req.params;
-    const { placeName, lat, lng, address, time, memoText } = req.body;
+    const { placeName, lat, lng, address, time, memoText, geometry_viewport } = req.body;
     // console.log(req.files.imageFile)
     // let videoUrl = [];
     let imageUrl = [];
