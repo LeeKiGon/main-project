@@ -3,7 +3,6 @@ const Like = require('../models/like');
 
 //userId, planId, type으로 DB에 있는지 확인하기
 const findLikeByUserIdAndIdAndType = async ({ userId, Id, type }) => {
-    
     if (type === 'plan') {
         const findLike = await Like.findOne({ userId, planId: Id });
 
@@ -22,13 +21,10 @@ const findLikeByUserIdAndIdAndType = async ({ userId, Id, type }) => {
     }
     if (type === 'reply') {
         const findLike = await Like.findOne({ userId, replyId: Id });
-
-        if (findLike !== null) {
-            return;
-        }
+        
         return findLike;
     }
-}
+};
 
 //userId와 planId로 Like콜렉션에 도큐먼트 생성하기
 const createLike = async ({ userId, Id, type }) => {
@@ -54,7 +50,6 @@ const createLike = async ({ userId, Id, type }) => {
             });
             return;
         }
-             
     } catch (error) {
         throw error;
     }
@@ -92,5 +87,5 @@ const deleteLike = async ({ planId, userId }) => {
 module.exports = {
     findLikeByUserIdAndIdAndType,
     createLike,
-    deleteLike
+    deleteLike,
 };

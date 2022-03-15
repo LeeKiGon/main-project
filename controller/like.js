@@ -20,7 +20,7 @@ const addLike = async (req, res) => {
     });
     console.log(findLike);
     
-    if (!findLike) {
+    if (findLike) {
         return res
             .status(401)
             .json({ result: 'fail', message: '이미 좋아요 추가했습니다.' });
@@ -47,7 +47,7 @@ const cancelLike = async (req, res) => {
     });
     console.log(findLike);
 
-    if (!findLike) {
+    if (findLike) {
         return res
             .status(401)
             .json({ result: 'fail', message: '이미 북마크 취소했습니다.' });

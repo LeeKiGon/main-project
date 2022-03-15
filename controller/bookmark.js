@@ -20,7 +20,7 @@ const addBookmark = async (req, res) => {
     });
     console.log(findBookmark);
 
-    if (!findBookmark) {
+    if (findBookmark) {
         return res
             .status(401)
             .json({ result: 'fail', message: '이미 북마크 추가했습니다.' });
@@ -44,7 +44,7 @@ const cancelBookmark = async (req, res) => {
     });
     console.log(findBookmark);
 
-    if (!findBookmark) {
+    if (findBookmark) {
         return res
             .status(401)
             .json({ result: 'fail', message: '이미 북마크 취소했습니다.' });
