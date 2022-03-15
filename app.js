@@ -18,7 +18,7 @@ app.use((req, res, next) => {
     )
     next()
 })
-console.log(new Date())
+// console.log(new Date())
 
 const corsOptions = {
     origin: '*',
