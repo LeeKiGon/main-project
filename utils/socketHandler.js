@@ -56,7 +56,7 @@ io.on('connection', (socket) => {
     });
 
     // socket room (chat)
-    socket.on('room', async ({ fromSnsId, toSnsId, chatText }) => {
+    socket.on('room', async ({ fromSnsId, toSnsId, chatText, createdAt }) => {
         try {
             const roomNum = await roomNumMaker(fromSnsId, toSnsId);
 
