@@ -39,6 +39,9 @@ const cancelLike = async (req, res) => {
     const { userId } = res.locals.user;
     const { Id } = req.params;
     let type = req.url.split('/').length
+    if (num === 5) type = 'plan';
+    if (num === 6) type = 'comment';
+    if (num === 7) type = 'reply';
 
     const findLike = await LikeService.findLikeByUserIdAndIdAndType({
         userId,
@@ -50,7 +53,7 @@ const cancelLike = async (req, res) => {
     if (findLike) {
         return res
             .status(401)
-            .json({ result: 'fail', message: '이미 북마크 취소했습니다.' });
+            .json({ result: 'fail', message: '이미 좋아요 취소했습니다.' });
     }
 
     await LikeService.deleteLike({ userId, Id, type });
