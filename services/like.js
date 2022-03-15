@@ -56,7 +56,7 @@ const createLike = async ({ userId, Id, type }) => {
 };
 
 //userId와 planId로 Like콜렉션에서 도큐먼트 삭제하기
-const deleteLike = async ({ planId, userId }) => {
+const deleteLike = async ({ userId, Id, type }) => {
     try {
         if (type === 'plan') {
             await Like.deleteOne({
