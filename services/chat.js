@@ -4,7 +4,7 @@ const User = require('../models/user');
 
 const findAndUpdateChatRoom = async ({ fromSnsId, toSnsId, roomNum }) => {
     try {
-        console.log(fromSnsId, toSnsId, roomNum)
+        console.log(fromSnsId, toSnsId, roomNum);
         if (!fromSnsId || !toSnsId || !roomNum) {
             //   throw customizedError(MESSAGE.WRONG_REQ, 400);
             throw new Error('잘못된 요청입니다.');
@@ -42,7 +42,7 @@ const saveChatMessage = async ({
     chatText,
     checkChat,
     roomNum,
-    createdAt
+    createdAt,
 }) => {
     try {
         const findChatRoom = await ChatRoom.findOne({ roomNum });
@@ -131,24 +131,27 @@ const getChatRoomList = async ({ userId }) => {
         const findChatRoomList = await ChatRoom.find({
             $or: [{ userId }, { userId2: userId }],
         }).populate({
-            path: 'lastChat userId userId2'
+            path: 'lastChat userId userId2',
         });
-        
-        
 
         if (!findChatRoomList) {
             return;
         }
 
         // 채팅방 목록 불러온 사람이 무조건 userId 가 되게 변경
-        for(let i=0; i< findChatRoomList.length; i++){
-            const myUserInfo = findChatRoomList[i].userId
-            if(findChatRoomList[i].userId2.userId === userId) {
+        for (let i = 0; i < findChatRoomList.length; i++) {
+            const myUserInfo = findChatRoomList[i].userId;
+            const notReadCount = await ChatMessage.count({
+                chatRoomId: findChatRoomList[i].chatRoomId,
+                toUserId: userId, checkChat : false
+            })
+            if (findChatRoomList[i].userId2.userId === userId) {
                 findChatRoomList[i]._doc.userId = findChatRoomList[i].userId2;
                 findChatRoomList[i]._doc.userId2 = myUserInfo;
             }
+            findChatRoomList[i]._doc.notReadCount = notReadCount;
         }
-        
+
         return findChatRoomList;
     } catch (error) {
         throw error;
@@ -157,7 +160,7 @@ const getChatRoomList = async ({ userId }) => {
 
 // 채팅을 읽었는지 확인하는 api
 const checkChat = async ({ userId }) => {
-    const test = await User.findOne({_id: userId}).populate('chatRooms')
+    const test = await User.findOne({ _id: userId }).populate('chatRooms');
 
     console.log(test);
 
@@ -173,11 +176,14 @@ const checkChat = async ({ userId }) => {
         return newChatMessage;
     }
 
-    
     for (let i = 0; i < findChatRoomList.length; i++) {
         let lastChat = findChatRoomList[i].lastChat;
-        if(findChatRoomList[i].lastChat) {
-            if (lastChat.checkChat === false && lastChat.fromUserId.userId !== userId) return newChatMessage = true
+        if (findChatRoomList[i].lastChat) {
+            if (
+                lastChat.checkChat === false &&
+                lastChat.fromUserId.userId !== userId
+            )
+                return (newChatMessage = true);
         }
     }
 
