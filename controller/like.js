@@ -37,7 +37,8 @@ const addLike = async (req, res) => {
 const cancelLike = async (req, res) => {
     const { userId } = res.locals.user;
     const { Id } = req.params;
-    let type = req.url.split('/').length;
+    let type = '';
+    let num = req.url.split('/').length;
     if (num === 5) type = 'plan';
     if (num === 6) type = 'comment';
     if (num === 7) type = 'reply';
