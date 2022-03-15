@@ -42,6 +42,7 @@ const saveChatMessage = async ({
     chatText,
     checkChat,
     roomNum,
+    createdAt
 }) => {
     try {
         const findChatRoom = await ChatRoom.findOne({ roomNum });
@@ -59,6 +60,7 @@ const saveChatMessage = async ({
             chatText,
             checkChat,
             chatRoomId: findChatRoom.chatRoomId,
+            createdAt,
         });
 
         findChatRoom.lastChat = ChatMessage.chatMessageId;

@@ -70,6 +70,7 @@ io.on('connection', (socket) => {
                 fromSnsId,
                 chatText,
                 checkChat,
+                createdAt,
             };
 
             await chatService.saveChatMessage({
