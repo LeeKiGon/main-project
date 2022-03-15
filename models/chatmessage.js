@@ -19,9 +19,9 @@ const ChatMessageSchema = new mongoose.Schema({
     checkChat: {
         type: Boolean,
     },
-    createAt: {
+    createdAt: {
         type: String,
-    }
+    },
 });
 
 ChatMessageSchema.virtual('chatMessageId').get(function () {
