@@ -1,4 +1,5 @@
 require('dotenv').config();
+const helmet = require('helmet');
 const express = require('express');
 const cors = require('cors');
 const app = express();
@@ -24,6 +25,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.use(helmet());
 passportConfig(app)
 // app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 app.use(express.json());
