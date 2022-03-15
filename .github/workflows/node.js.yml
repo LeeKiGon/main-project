@@ -19,7 +19,8 @@ jobs:
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
-        password: ${{ secrets.PASSWORD }}
+        # password: ${{ secrets.PASSWORD }}
+        KEY: ${{ secrets.PRIVATE_KEY }}
         port: ${{ secrets.PORT }}
         script: |
           sudo -s
