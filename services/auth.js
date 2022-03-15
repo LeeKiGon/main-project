@@ -14,7 +14,7 @@ const findUserInfoByUserId = async ({ myUserId, otherUserId }) => {
         const loginUserInfo = await User.findOne({ _id: myUserId }).populate(
             'plans'
         );
-        const otherUserInfo = await User.find({ _id: otherUserId }).populate({
+        const otherUserInfo = await User.findOne({ _id: otherUserId }).populate({
             path: 'plans',
             match: { status: '공개' },
         });
