@@ -7,9 +7,9 @@ const addLike = async (req, res) => {
     console.log(Id)
     let type = '';
     let num = req.originalUrl.split('/').length
-    if (num === 3) type = 'plan';
-    if (num === 4) type = 'comment';
-    if (num === 5) type = 'reply';
+    if (num === 5) type = 'plan';
+    if (num === 6) type = 'comment';
+    if (num === 7) type = 'reply';
     
     console.log(type) 
 

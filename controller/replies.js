@@ -7,7 +7,7 @@ const postReply = async (req, res, next) => {
         const { content } = req.body;
         const { planId, commentId } = req.params;
 
-        const Replies = await ReplyService.createreplies({ userId, content, planId, commentId });
+        const Replies = await ReplyService.createReply({ userId, content, planId, commentId });
 
         return res.json({ result: 'success', message: '작성 완료' });
     } catch(error){
