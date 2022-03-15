@@ -12,6 +12,13 @@ jobs:
     runs-on: ubuntu-18.04
 
     steps:
+    - name: Create env file
+      run: |
+        cd client
+        touch .env
+        cat << EOF >> .env
+        ${{ serets.ENV }}
+        
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
