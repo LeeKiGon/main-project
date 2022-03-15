@@ -39,6 +39,7 @@ io.on('connection', (socket) => {
                 roomNum,
             });
             socket.join(roomNum);
+            io.to(roomNum).emit('join', toSnsId);
             socket.leave(fromSnsId);
         } catch (error) {
             console.log(error);
