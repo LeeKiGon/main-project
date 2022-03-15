@@ -4,21 +4,19 @@ const LikeService = require('../services/like');
 const addLike = async (req, res) => {
     const { userId } = res.locals.user;
     const { Id } = req.params;
-    console.log(Id);
+    
     let type = '';
     let num = req.originalUrl.split('/').length;
     if (num === 5) type = 'plan';
     if (num === 6) type = 'comment';
     if (num === 7) type = 'reply';
 
-    console.log(type);
-
     const findLike = await LikeService.findLikeByUserIdAndIdAndType({
         userId,
         Id,
         type,
     });
-    console.log(findLike);
+    
 
     if (findLike) {
         return res
@@ -38,17 +36,17 @@ const cancelLike = async (req, res) => {
     const { userId } = res.locals.user;
     const { Id } = req.params;
     let type = '';
-    let num = req.url.split('/').length;
+    let num = req.originalUrl.split('/').length;
     if (num === 5) type = 'plan';
     if (num === 6) type = 'comment';
     if (num === 7) type = 'reply';
-
+    
     const findLike = await LikeService.findLikeByUserIdAndIdAndType({
         userId,
         Id,
         type,
     });
-    console.log(findLike);
+    
 
     if (!findLike) {
         return res
