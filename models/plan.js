@@ -73,8 +73,7 @@ PlanSchema.virtual('likeCount', {
 
 PlanSchema.statics.findLikeBookmark = async function (foundPlan , user) {
     // const findPaging = await this.find().sort('-createdAt').skip(5 * (page - 1)).limit(5).populate('userId likeCount bookmarkCount', 'snsId email nickname profile_img').exec();
-    // console.log(this)
-    // console.log(user)
+
     if(user === undefined){
         for (let i = 0; i < foundPlan.length; i++) {
         foundPlan[i]._doc.isLike = false;
