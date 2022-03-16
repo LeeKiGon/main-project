@@ -15,7 +15,7 @@ router.post(ROUTE.PLACES.ADD, authMiddleware, upload.fields([
 ]), placesController.postplaces);
 
 //여행 장소 및 내용 수정하기
-router.patch(ROUTE.PLACES.UPDATE, authMiddleware, upload.fields([
+router.post(ROUTE.PLACES.UPDATE, authMiddleware, upload.fields([
     // { name: 'videoFile', maxCount: 1 },
     { name: 'imageFile', maxCount: 10 },
 ]), placesController.patchplaces);
