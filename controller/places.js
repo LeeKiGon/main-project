@@ -42,7 +42,7 @@ const patchplaces = async (req, res, next) => {
 };
 
 //여행 일정 삭제
-const deleteplaces = async (req, res, next) => {
+const deleteplaces = async (req, res) => {
     const { userId } = res.locals.user;
     const { placeId } = req.params;
 
