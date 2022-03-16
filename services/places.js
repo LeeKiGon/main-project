@@ -64,7 +64,7 @@ const updataplaces = async ({ placeId, placeName, lat, lng, address, time, memoT
             findPlace.memoImage.push(imageUrl[i].location);
         }
 
-        if (memoText) updatePlace.memoText = memoText;
+        if (memoText) updataPlace.memoText = memoText;
 
         await findPlace.save();              
         return;
