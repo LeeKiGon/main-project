@@ -2,6 +2,10 @@ const Place = require('../models/place');
 const Day = require('../models/day');
 const Plan = require('../models/plan');
 
+const getTargetPlace = async ({ PlaceId }) => {
+    const targetPlaceId = await Place.findOne({ _id: PlaceId })
+    return targetPlaceId;
+}
 
 //여행 일정 생성
 const createplaces = async ({ dayId, placeName, lat, lng, address, time, memoText, imageUrl }) => {
@@ -71,26 +75,22 @@ const updataplaces = async ({ placeId, placeName, lat, lng, address, time, memoT
     }
     
 //여행 일정 삭제
-const placesdelete = async({ userId, placeId }) => {
-    
-    const targetplaces = await Place.findOne({ _id: placeId });
-    if (targetplaces.userId.toHexString() !== userId) {
-        return res.json({
-            result: 'false',
-            message: '본인의 일정만 삭제할수있습니다',
-        });
-    } else {
+const placesdelete = async({ placeId }) => {    
+    try{
         await Place.deleteOne({ _id: placeId });
         res.json({
             result: 'success',
             message: '성공',
         });
         return;
-    };
+    } catch (error) {
+        throw error;
+    }
 };
 
 module.exports = {
     createplaces,
     updataplaces,
-    placesdelete
+    placesdelete,
+    getTargetPlace
 }    
