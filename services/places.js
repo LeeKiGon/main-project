@@ -3,8 +3,8 @@ const Day = require('../models/day');
 const Plan = require('../models/plan');
 
 const getTargetPlace = async ({ PlaceId }) => {
-    const targetPlace = await Place.findOne({ _id: PlaceId })
-    return targetPlace;
+    const targetPlaces = await Place.findOne({ _id: PlaceId })
+    return targetPlaces;
 }
 
 //여행 일정 생성
