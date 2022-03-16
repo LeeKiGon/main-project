@@ -47,7 +47,7 @@ const deleteplaces = async (req, res, next) => {
     const { userId } = res.locals.user;
     const { placeId } = req.params;
 
-    const Places = await PlacesService.placesdelete({ placeId, userId })
+    const Places = await PlacesService.placesdelete({ userId, placeId, })
 
     return res.json({ result: 'success', message: '삭제 완료' });
     }catch(error){
