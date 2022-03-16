@@ -78,11 +78,7 @@ const updataplaces = async ({ placeId, placeName, lat, lng, address, time, memoT
 const placesdelete = async({ placeId }) => {    
     try{
         await Place.deleteOne({ _id: placeId });
-        res.json({
-            result: 'success',
-            message: '성공',
-        });
-        return;
+            return;
     } catch (error) {
         throw error;
     }

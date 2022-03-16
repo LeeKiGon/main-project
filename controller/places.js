@@ -46,13 +46,13 @@ const deleteplaces = async (req, res) => {
     const { userId } = res.locals.user;
     const { placeId } = req.params;
 
-    const targetplaces = await PlacesService.getTargetPlace({ placeId });
-    if (targetplaces.userId.toHexString() !== userId) {
-        return res.status(401).json({
-            result: 'false',
-            message: '본인의 일정만 삭제할수있습니다',
-        });
-    }
+    // const targetplaces = await PlacesService.getTargetPlace({ placeId });
+    // if (targetplaces.userId.toHexString() !== userId) {
+    //     return res.status(401).json({
+    //         result: 'false',
+    //         message: '본인의 일정만 삭제할수있습니다',
+    //     });
+    // }
     await PlacesService.placesdelete({ placeId })
     
     res.json({ result: 'success', message: '삭제 완료' });
