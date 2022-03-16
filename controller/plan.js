@@ -71,7 +71,7 @@ const changePlanStatus = async (req, res) => {
 };
 
 const deletePlan = async (req, res) => {
-    const { uesrId } = res.locals.user;
+    const { userId } = res.locals.user;
     const { planId } = req.params;
 
     const findPlan = await planService.findOnePlanByPlanId({ planId });
