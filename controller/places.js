@@ -32,9 +32,9 @@ const patchplaces = async (req, res, next) => {
         // req.files.videoFile ? videoUrl = req.files.videoFile : videoUrl;
         req.files.imageFile ? (imageUrl = req.files.imageFile) : imageUrl;
 
-        const Places = await PlacesService.createplaces({ placeId, placeName, lat, lng, address, time, memoText, imageUrl });
+        const Places = await PlacesService.updataplaces({ placeId, placeName, lat, lng, address, time, memoText, imageUrl });
 
-        return res.json({ result: 'success', message: '작성 완료' });
+        return res.json({ result: 'success', message: '수정 완료' });
 
     }catch(error){
         next(error);
