@@ -9,7 +9,7 @@ const getTargetPlace = async ({ PlaceId }) => {
 
 //여행 일정 생성
 const createplaces = async ({ dayId, placeName, lat, lng, address, time, memoText, imageUrl }) => {
-
+    try{
         const findDay = await Day.findOne({ _id: dayId });
         const findPlan = await Plan.findOne({ _id: findDay.planId });
         if (findPlan.destination === '국내') {
@@ -51,10 +51,13 @@ const createplaces = async ({ dayId, placeName, lat, lng, address, time, memoTex
         // console.log("newDayFind :",newDayFind)
 
         return;
+    }catch (error){
+        throw error;
     }
+}
 //여행 일정 수정
 const updataplaces = async ({ placeId, placeName, lat, lng, address, time, memoText, imageUrl }) => {    
-
+    try{
         const findPlace = await Place.findOneAndUpdate(
             { _id: placeId },
             { placeName, lat, lng, address, time, memoText, imageUrl }
@@ -72,7 +75,10 @@ const updataplaces = async ({ placeId, placeName, lat, lng, address, time, memoT
 
         await findPlace.save();              
         return;
+    }catch (error) {
+        throw error;
     }
+}
     
 //여행 일정 삭제
 const placesdelete = async({ placeId }) => {    

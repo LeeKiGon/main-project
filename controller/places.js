@@ -1,8 +1,7 @@
 const PlacesService = require('../services/places');
 
 //여행 일정 추가
-const postplaces = async (req, res, next) => {
-try{
+const postplaces = async (req, res) => {
     const { dayId } = req.params;
     const { placeName, lat, lng, address, time, memoText } = req.body;
     // console.log(req.files.imageFile)
@@ -14,15 +13,10 @@ try{
     const Places = await PlacesService.createplaces({ dayId, placeName, lat, lng, address, time, memoText, imageUrl });
 
     return res.json({ result: 'success', message: '작성 완료' });
-
-    }catch(error){
-        next(error);
-    }
 };
 
 //여행 일정 수정
-const patchplaces = async (req, res, next) => {
-    try{
+const patchplaces = async (req, res) => {
         const { placeId } = req.params;
         const { placeName, lat, lng, address, time, memoText } = req.body;
 
@@ -35,10 +29,6 @@ const patchplaces = async (req, res, next) => {
         const Places = await PlacesService.updataplaces({ placeId, placeName, lat, lng, address, time, memoText, imageUrl });
 
         return res.json({ result: 'success', message: '수정 완료' });
-
-    }catch(error){
-        next(error);
-    }
 };
 
 //여행 일정 삭제
