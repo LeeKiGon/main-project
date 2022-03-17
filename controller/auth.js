@@ -7,9 +7,15 @@ const updateUserInfo = async (req, res, next) => {
     try {
         const { userId } = res.locals.user;
         const { nickname } = req.body;
-        const { location } = req.file;
+        let profile_img = '';
+        if (req.file) profile_img = req.file.location;
+        console.log(nickname);
 
-        await userService.updateUserInfo({ userId, nickname, profile_img : location });
+        await userService.updateUserInfo({
+            userId,
+            nickname,
+            profile_img,
+        });
         res.status(200).json({
             result: 'success',
             message: '업데이트 완료되었습니다.',
@@ -58,4 +64,24 @@ const kakaoCallback = (req, res, next) => {
     })(req, res, next);
 };
 
-module.exports = { kakaoCallback, getMyInfo, getUserInfo, updateUserInfo };
+const withdrawalUser = async (req, res, next) => {
+    try {
+        const { userId } = res.locals.user;
+        await userService.deleteUser({ userId });
+
+        res.status(200).json({
+            result: 'success',
+            message: '탈퇴 완료'
+        })
+    } catch (error) {
+        next(error)
+    }
+};
+
+module.exports = {
+    kakaoCallback,
+    getMyInfo,
+    getUserInfo,
+    updateUserInfo,
+    withdrawalUser,
+};

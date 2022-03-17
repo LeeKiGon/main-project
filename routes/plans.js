@@ -30,4 +30,7 @@ router.post(ROUTE.PLAN.ADD_THUMBNAIL, authMiddleware, imageUploder, planControll
 // 나의 여행불러오기
 router.get(ROUTE.PLAN.GET_MY, authMiddleware, planController.getMyPlans);
 
+// 여행 수정하기
+router.patch(ROUTE.PLAN.UPDATE ,authMiddleware, planController.updatePlanInfo);
+
 module.exports = router;

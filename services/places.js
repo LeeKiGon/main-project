@@ -1,7 +1,7 @@
 const Place = require('../models/place');
 const Day = require('../models/day');
 const Plan = require('../models/plan');
-const deleteS3 = require('../middlewares/deleteS3')
+const deleteS3 = require('../utils/deleteS3')
 
 const getTargetPlace = async ({ PlaceId }) => {
     const targetPlaces = await Place.findOne({ _id: PlaceId });
@@ -116,7 +116,7 @@ const placesdelete = async ({ placeId }) => {
     try {
         const findPlace = await Place.findOne({ _id: placeId });
         deleteS3(findPlace.memoImage)
-        await Place.deleteOne({_id: placeId})
+        await Place.deleteOne({ _id: placeId });
         return;
     } catch (error) {
         throw error;

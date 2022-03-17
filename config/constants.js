@@ -39,14 +39,16 @@ const ROUTE = {
         CHANGE_STATUS: '/plans/:planId/public',
         DELETE: '/plans/:planId',
         GET_MY: '/myplans',
-        ADD_THUMBNAIL: '/plans/:planId/thumbnail'
+        ADD_THUMBNAIL: '/plans/:planId/thumbnail',
+        UPDATE: '/plans/:planId'
     },
     AUTH: {
         KAKAO : '/auth/kakao',
         KAKAO_CALLBACK: '/auth/kakao/callback',
         GET_MY_INFOMATION: '/users/auth/me',
         GET_USERS_INFOMATION: '/users/:userId',
-        UPDATE_MY_INFOMATION: '/users/auth/me'
+        UPDATE_MY_INFOMATION: '/users/auth/me',
+        WITHDRAW: '/users/auth/me'
     },
     PLACES: {
         ADD: '/plans/days/:dayId',
