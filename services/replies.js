@@ -25,6 +25,7 @@ const updateReply = async ({ content, replyId }) => {
 //댓글에 답글 삭제
 const deleteReply = async({ replyId }) => {
         await Reply.deleteOne({ _id: replyId });
+        console.log(replyId)
         return;
 };
 

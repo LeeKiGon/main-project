@@ -1,7 +1,6 @@
 const app = require("./app");
 const connect = require("./models");
 
-
 const { PORT } = process.env;
 
 connect();
