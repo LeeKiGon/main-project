@@ -1,15 +1,25 @@
 const Place = require('../models/place');
 const Day = require('../models/day');
 const Plan = require('../models/plan');
+const deleteS3 = require('../middlewares/deleteS3')
 
 const getTargetPlace = async ({ PlaceId }) => {
-    const targetPlaces = await Place.findOne({ _id: PlaceId })
+    const targetPlaces = await Place.findOne({ _id: PlaceId });
     return targetPlaces;
-}
+};
 
 //여행 일정 생성
-const createplaces = async ({ dayId, placeName, lat, lng, address, time, memoText, imageUrl }) => {
-    try{
+const createplaces = async ({
+    dayId,
+    placeName,
+    lat,
+    lng,
+    address,
+    time,
+    memoText,
+    imageUrl,
+}) => {
+    try {
         const findDay = await Day.findOne({ _id: dayId });
         const findPlan = await Plan.findOne({ _id: findDay.planId });
         if (findPlan.destination === '국내') {
@@ -51,13 +61,22 @@ const createplaces = async ({ dayId, placeName, lat, lng, address, time, memoTex
         // console.log("newDayFind :",newDayFind)
 
         return;
-    }catch (error){
+    } catch (error) {
         throw error;
     }
-}
+};
 //여행 일정 수정
-const updataplaces = async ({ placeId, placeName, lat, lng, address, time, memoText, imageUrl }) => {    
-    try{
+const updataplaces = async ({
+    placeId,
+    placeName,
+    lat,
+    lng,
+    address,
+    time,
+    memoText,
+    imageUrl,
+}) => {
+    try {
         const findPlace = await Place.findOneAndUpdate(
             { _id: placeId },
             { placeName, lat, lng, address, time, memoText, imageUrl }
@@ -73,18 +92,32 @@ const updataplaces = async ({ placeId, placeName, lat, lng, address, time, memoT
 
         if (memoText) updataplaces.memoText = memoText;
 
-        await findPlace.save();              
+        await findPlace.save();
         return;
-    }catch (error) {
+    } catch (error) {
         throw error;
     }
-}
-    
+};
+
+//여행 일정 이미지 삭제
+const deleteMemoImageInPlace = async ({ placeId, imageIndex }) => {
+    try {
+        const findPlace = await Place.findOne({ _id: placeId });
+        const deleteImage = findPlace.memoImage.splice(imageIndex, 1);
+        deleteS3(deleteImage)
+        await findPlace.save();
+    } catch (error) {
+        throw error;
+    }
+};
+
 //여행 일정 삭제
-const placesdelete = async({ placeId }) => {    
-    try{
-        await Place.deleteOne({ _id: placeId });
-            return;
+const placesdelete = async ({ placeId }) => {
+    try {
+        const findPlace = await Place.findOne({ _id: placeId });
+        deleteS3(findPlace.memoImage)
+        await Place.deleteOne({_id: placeId})
+        return;
     } catch (error) {
         throw error;
     }
@@ -94,5 +127,6 @@ module.exports = {
     createplaces,
     updataplaces,
     placesdelete,
-    getTargetPlace
-}    
+    getTargetPlace,
+    deleteMemoImageInPlace,
+};

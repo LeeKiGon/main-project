@@ -10,30 +10,59 @@ const postplaces = async (req, res) => {
 
     // req.files.videoFile ? videoUrl = req.files.videoFile : videoUrl;
     req.files.imageFile ? (imageUrl = req.files.imageFile) : imageUrl;
-    const Places = await PlacesService.createplaces({ dayId, placeName, lat, lng, address, time, memoText, imageUrl });
+    const Places = await PlacesService.createplaces({
+        dayId,
+        placeName,
+        lat,
+        lng,
+        address,
+        time,
+        memoText,
+        imageUrl,
+    });
 
     return res.json({ result: 'success', message: '작성 완료' });
 };
 
 //여행 일정 수정
 const patchplaces = async (req, res) => {
-        const { placeId } = req.params;
-        const { placeName, lat, lng, address, time, memoText } = req.body;
+    const { placeId } = req.params;
+    const { placeName, lat, lng, address, time, memoText } = req.body;
 
-        // let videoUrl = [];
-        let imageUrl = [];
+    // let videoUrl = [];
+    let imageUrl = [];
 
-        // req.files.videoFile ? videoUrl = req.files.videoFile : videoUrl;
-        req.files.imageFile ? (imageUrl = req.files.imageFile) : imageUrl;
+    // req.files.videoFile ? videoUrl = req.files.videoFile : videoUrl;
+    req.files.imageFile ? (imageUrl = req.files.imageFile) : imageUrl;
 
-        const Places = await PlacesService.updataplaces({ placeId, placeName, lat, lng, address, time, memoText, imageUrl });
+    const Places = await PlacesService.updataplaces({
+        placeId,
+        placeName,
+        lat,
+        lng,
+        address,
+        time,
+        memoText,
+        imageUrl,
+    });
 
-        return res.json({ result: 'success', message: '수정 완료' });
+    return res.json({ result: 'success', message: '수정 완료' });
+};
+
+//여행 일정 이미지 삭제
+const deletePlaceImage = async (req, res) => {
+    const { placeId, imageIndex } = req.params;
+
+    await PlacesService.deleteMemoImageInPlace({
+        placeId,
+        imageIndex,
+    });
+
+    return res.json({ result: 'success', message: '이미지 삭제 완료' });
 };
 
 //여행 일정 삭제
 const deleteplaces = async (req, res) => {
-    const { userId } = res.locals.user;
     const { placeId } = req.params;
 
     // const targetplaces = await PlacesService.getTargetPlace({ placeId });
@@ -43,13 +72,14 @@ const deleteplaces = async (req, res) => {
     //         message: '본인의 일정만 삭제할수있습니다',
     //     });
     // }
-    await PlacesService.placesdelete({ placeId })
-    
+    await PlacesService.placesdelete({ placeId });
+
     res.json({ result: 'success', message: '삭제 완료' });
-}
+};
 
 module.exports = {
     postplaces,
     patchplaces,
-    deleteplaces
-}
+    deleteplaces,
+    deletePlaceImage,
+};

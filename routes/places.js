@@ -23,4 +23,7 @@ router.post(ROUTE.PLACES.UPDATE, authMiddleware, upload.fields([
 //특정 장소 삭제하기
 router.delete(ROUTE.PLACES.DELETE, authMiddleware, placesController.deleteplaces)
 
+//여행 일정 사진 삭제하기
+router.delete(ROUTE.PLACES.IMAGE_DELETE, authMiddleware, placesController.deletePlaceImage)
+
 module.exports = router;

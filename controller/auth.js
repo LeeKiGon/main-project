@@ -7,9 +7,9 @@ const updateUserInfo = async (req, res, next) => {
     try {
         const { userId } = res.locals.user;
         const { nickname } = req.body;
-        const { profile_img } = req.file;
+        const { location } = req.file;
 
-        await userService.updateUserInfo({ userId, nickname, profile_img });
+        await userService.updateUserInfo({ userId, nickname, profile_img : location });
         res.status(200).json({
             result: 'success',
             message: '업데이트 완료되었습니다.',

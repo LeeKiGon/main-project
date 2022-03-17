@@ -7,24 +7,6 @@ const SOCKET_CORS = {
     methods: ['GET', 'POST'],
 };
 
-const DIRECTORY = {
-    CATEGORY_URL: 'categoryUrl',
-    CHAT_IMAGES: 'chatImages',
-    CHAT_TRACKS: 'chatTracks',
-    ETC: 'etc',
-    IMAGES: 'images',
-    TRACKS: 'tracks',
-    TRACK_THUMBNAIL: 'trackThumbnail',
-    UNTRACKS: 'untracks',
-    AUDIO: 'audio',
-    IPHONE: 'iphone',
-    IMAGE: 'image',
-    CATEGORYALL: '전체',
-    CATEGORYALLTEXT: '최근에 올라온 목소리',
-    CHAT_TYPE: 'text',
-    TIMEOUT: '10s',
-};
-
 const ROUTE = {
     INDEX: '/',
     BOOKMARK: {
@@ -70,12 +52,12 @@ const ROUTE = {
         ADD: '/plans/days/:dayId',
         UPDATE: '/plans/days/places/:placeId',
         DELETE: '/plans/days/places/:placeId',
+        IMAGE_DELETE: '/plans/days/places/:placeId/:imageIndex'
     }
 };
 
 module.exports = {
     SOCKET_CORS,
     MESSAGE,
-    DIRECTORY,
     ROUTE,
 };

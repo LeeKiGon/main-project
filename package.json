@@ -13,7 +13,8 @@
     "passport": "^0.5.2",
     "passport-kakao": "^1.0.1",
     "prettier": "^2.5.1",
-    "socket.io": "^4.4.1"
+    "socket.io": "^4.4.1",
+    "uniqid": "^5.4.0"
   },
   "name": "main-project",
   "version": "1.0.0",

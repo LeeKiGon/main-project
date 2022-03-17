@@ -5,8 +5,8 @@ const express = require('express');
 // const https = require('https');
 const cors = require('cors');
 const app = express();
-const routes = require('./routes/index.js')
-const passportConfig = require("./passport");
+const routes = require('./routes/index.js');
+const passportConfig = require('./passport');
 // const { swaggerUi, specs } = require('./utils/swagger');
 const { LETSENCRYPT } = process.env;
 
@@ -22,10 +22,10 @@ app.use((req, res, next) => {
         `[${req.method}]`,
         req.originalUrl,
         ' - ',
-        new Date().toLocaleString(),
-    )
-    next()
-})
+        new Date().toLocaleString()
+    );
+    next();
+});
 // console.log(new Date())
 
 const corsOptions = {
@@ -42,12 +42,10 @@ const corsOptions = {
 // app.use(helmet.dnsPrefetchControl()) //브라우저의 dns레코드 미리추출방지
 app.use(cors(corsOptions));
 app.use(helmet());
-passportConfig(app)
+passportConfig(app);
 // app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 app.use(express.json());
-app.use(express.urlencoded({extended: false})); // API 요청에서 받은 body 값을 파싱(해석)하는 역할을 수행하는 것이 bodyParser
-app.use('/api', routes)
-
-
+app.use(express.urlencoded({ extended: false })); // API 요청에서 받은 body 값을 파싱(해석)하는 역할을 수행하는 것이 bodyParser
+app.use('/api', routes);
 
 module.exports = app;
