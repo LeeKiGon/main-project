@@ -6,6 +6,7 @@ const User = require('../models/user');
 const { KAKAO_CLIENT_SECRET, KAKAO_CLIENT_ID, DOMAIN } = process.env;
 
 const callbackURL = (platform) => `${DOMAIN}/api/auth/${platform}/callback`
+console.log(callbackURL('kakao'))
 
 module.exports = (app) => {
     app.use(passport.initialize());

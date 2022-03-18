@@ -58,6 +58,7 @@ const getUserInfo = async (req, res, next) => {
 const kakaoCallback = (req, res, next) => {
     passport.authenticate('kakao', { failureRedirect: '/' }, (err, user) => {
         if (err) return next(err);
+        console.log('adf')
         const token = jwt.sign({ snsId: user.snsId }, JWT_SECRET_KEY);
 
         res.json({ token, userId: user.email });
