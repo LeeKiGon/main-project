@@ -21,6 +21,6 @@ router.get('/chat/new', authMiddleware, chatController.checkNewChat);
 router.get('/chat/:toSnsId', authMiddleware, chatController.getChatMessageByIds); 
 
 // 채팅으로 이미지파일 보내기
-// // router.post(ROUTE.CHAT.IMAGE, imageUploader, chatController.postImage);
+// router.post(ROUTE.CHAT.IMAGE, imageUploader, chatController.postImage);
 
 module.exports = router;

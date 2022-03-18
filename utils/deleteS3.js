@@ -19,7 +19,7 @@ module.exports = (uriList) => {
 
     for (let i = 0; i < uriList.length; i++) {
         const [type, uri] = uriList[i].split('/').slice(-2);
-        const key = `${type}/` + decodeURI(uri);
+        const key = `${type}/` + uri;
         const newKey = { Key: key };
         params.Delete.Objects.push(newKey);
     }

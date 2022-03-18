@@ -25,7 +25,7 @@ const storage = multerS3({
     s3: S3,
     bucket: BUCKET_NAME,
     key(req, file, cb) {
-        cb(null, `images/${Date.now()}${uniqid()}${path.extname(file.originalname).toLocaleLowerCase()}`); 
+        cb(null, `images/${Date.now()}${uniqid()}${path.extname(file.originalname).toLocaleLowerCase()}`);
     },
 });
 

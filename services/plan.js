@@ -122,19 +122,19 @@ const updatePlan = async ({
     let beforeDays = calculateDays(findPlan.startDate, findPlan.endDate);
     let updateDays = calculateDays(startDate, endDate);
     let diffDays = Math.abs(beforeDays - updateDays);
+
     if (beforeDays < updateDays) {
-        for (let i = beforeDays + 2; i <= beforeDays + diffDays + 1; i++) {
-            const newDay = await Day.create({
+        for (let i = beforeDays + 2; i <= updateDays + 1; i++) {
+            await Day.create({
                 planId: findPlan._id,
                 dayNumber: i,
             });
         }
     }
-    if (beforDays > updateDays) {
-        await Day.deleteMany(
-            { planId },
-            { $gt: { dayNumber: updateDays + 1 } }
-        );
+    if (beforeDays > updateDays) {
+        for (let i = beforeDays+1; i > updateDays+1; i--) {
+            await Day.deleteOne({ planId, dayNumber: i})
+        }
     }
 
     findPlan.title = title;
@@ -195,7 +195,6 @@ const addThumbnail = async ({ thumbnailImage, planId }) => {
     try {
         const findPlan = await Plan.findOne({ _id: planId });
         if (findPlan.thumbnailImage) deleteS3([findPlan.thumbnailImage]);
-        console.log('테스트');
         findPlan.thumbnailImage = thumbnailImage;
         await findPlan.save();
         return;
