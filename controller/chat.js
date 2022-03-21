@@ -58,7 +58,7 @@ const deletechatroom = async (req, res) => {
             .status(200)
             .json({ result: 'false' , message: "본인의 채팅방만 삭제할수있습니다"});
     }
-    await chatService.getOutChatRoom({ chatroomId });
+    await chatService.getOutChatRoom({ chatroomId, userId });
     res.json({
         result: 'success',
         message: "성공"

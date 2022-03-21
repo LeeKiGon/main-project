@@ -91,9 +91,10 @@ const getChatMessageByRoomNum = async ({
             // throw customyourProfiledError(MESSAGE.NOT_USER, 400);
             throw new Error('잘못된 요청입니다.');
         }
-
         const findChatRoom = await ChatRoom.findOne({ roomNum });
         if(findChatRoom.outUser === myProfile.userId) {
+            console.log(myProfile.userId)
+            console.log(findChatRoom.outUser)
             findChatRoom.outUser = ''
             await findChatRoom.save();
         }
@@ -204,6 +205,7 @@ const getOutChatRoom = async ({ chatroomId, userId }) => {
     const findChatRoom = await ChatRoom.findOne({ _id: chatroomId });
     if(findChatRoom.outUser === '') {
         findChatRoom.outUser = userId
+        console.log(findChatRoom.outUser)
         await findChatRoom.save()
         const findChatMessages = await ChatMessage.find({ chatroomId })
         for(let message of findChatMessages) {

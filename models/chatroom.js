@@ -19,7 +19,7 @@ const ChatRoomSchema = new mongoose.Schema({
     },
     outUser: {
         type: String,
-        default: " "
+        default: ''
     }
 },
 {timestamps: true});
