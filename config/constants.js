@@ -41,7 +41,11 @@ const ROUTE = {
         GET_MY: '/myplans',
         ADD_THUMBNAIL: '/plans/:planId/thumbnail',
         UPDATE: '/plans/:planId',
-        COPY: '/plans/:planId/copy'
+        COPY: '/plans/:planId/copy',
+        GET_HOT_LIKE: '/plans/hotlike',
+        GET_HOT_BOOKMARK: '/plans/hotBookmark',
+        GET_HOT_DOMESTIC: '/plans/hotDomestic',
+        GET_HOT_INTERNATINAL: '/plans/hotInternational',
     },
     AUTH: {
         KAKAO : '/auth/kakao',

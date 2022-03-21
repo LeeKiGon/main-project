@@ -46,6 +46,7 @@ const checkNewChat = async (req, res) => {
         res.status(200).json({ result: 'success', newChatMessage });
 };
 
+
 // 채팅방 삭제
 const deletechatroom = async (req, res) => {
     const { userId } = res.locals.user
@@ -57,7 +58,7 @@ const deletechatroom = async (req, res) => {
             .status(200)
             .json({ result: 'false' , message: "본인의 채팅방만 삭제할수있습니다"});
     }
-    await chatService.deletechatroom({ chatroomId });
+    await chatService.getOutChatRoom({ chatroomId });
     res.json({
         result: 'success',
         message: "성공"

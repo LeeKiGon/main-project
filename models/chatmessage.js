@@ -22,6 +22,9 @@ const ChatMessageSchema = new mongoose.Schema({
     createdAt: {
         type: String,
     },
+    outUser: {
+        type: String
+    },
 });
 
 ChatMessageSchema.virtual('chatMessageId').get(function () {
