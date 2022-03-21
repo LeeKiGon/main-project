@@ -160,6 +160,7 @@ const getChatRoomList = async ({ userId }) => {
 
 // 채팅을 읽었는지 확인하는 api
 const checkChat = async ({ userId }) => {
+    try{
     const test = await User.findOne({ _id: userId }).populate('chatRooms');
 
     console.log(test);
@@ -186,9 +187,26 @@ const checkChat = async ({ userId }) => {
                 return (newChatMessage = true);
         }
     }
-
-    return newChatMessage;
+        return newChatMessage;
+    }catch (error) {
+        throw error;
+    }
 };
+
+const getTargetchatroom = async ({ chatroomId }) => {
+    const targetchatroom = await ChatRoom.findOne({ _id: chatroomId })
+    return targetchatroom;
+}
+
+// 채팅방 삭제
+const deletechatroom = async ({ chatroomId }) => {
+    try {
+        await ChatRoom.deleteOne({ _id : chatroomId })
+            return;
+    } catch (error) {
+        throw error;
+    }
+}
 
 module.exports = {
     findAndUpdateChatRoom,
@@ -196,4 +214,6 @@ module.exports = {
     getChatMessageByRoomNum,
     getChatRoomList,
     checkChat,
+    deletechatroom,
+    getTargetchatroom
 };

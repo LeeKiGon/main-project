@@ -44,7 +44,7 @@ const updateComment = async ({commentId, content}) => {
 const deleteComment = async ({ commentId }) => {
     try {
         await Comment.deleteOne({ _id : commentId });
-            return
+            return;
     } catch (error) {
         throw error;
     }

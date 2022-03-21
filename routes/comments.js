@@ -5,9 +5,6 @@ const { ROUTE } = require('../config/constants');
 //컨트롤러
 const CommentController = require('../controller/comment');
 
-//스키마
-const Comment = require('../models/comment');
-
 //미들웨어
 const authMiddleware = require('../middlewares/auth-middleware');
 

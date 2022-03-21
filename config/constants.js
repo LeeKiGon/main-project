@@ -55,6 +55,12 @@ const ROUTE = {
         UPDATE: '/plans/days/places/:placeId',
         DELETE: '/plans/days/places/:placeId',
         IMAGE_DELETE: '/plans/days/places/:placeId/:imageIndex'
+    },
+    CHAT: {
+        GET_MY_CHATROOMLIST: '/chat/list',
+        GET_MY_NEWCHAT: '/chat/new',
+        GET_MY_CHATMESSAGE: '/chat/:toSnsId',
+        DELETE: '/chat/:chatroomId'
     }
 };
 

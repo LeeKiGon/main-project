@@ -12,13 +12,10 @@ const roomNumMaker = (x, y) => {
     return roomNum;
 };
 
-const getChatMessageByIds = async (req, res, next) => {
-    try {
+const getChatMessageByIds = async (req, res) => {
         const { snsId } = res.locals.user;
         const { page } = req.query;
         const { toSnsId } = req.params; //상대방꺼 userId임
-
-        console.log(snsId, toSnsId);
 
         const roomNum = await roomNumMaker(snsId, toSnsId);
         const getChat = await chatService.getChatMessageByRoomNum({
@@ -33,36 +30,43 @@ const getChatMessageByIds = async (req, res, next) => {
         return res
             .status(200)
             .json({ result: 'success', chatMessages: getChat });
-    } catch (error) {
-        next(error);
-    }
 };
 
-const getChatListByUserId = async (req, res, next) => {
-    try {
+const getChatListByUserId = async (req, res) => {
         const { userId } = res.locals.user;
         const findChatRoom = await chatService.getChatRoomList({ userId });
         return res
             .status(200)
             .json({ result: 'success', chatRoomList: findChatRoom });
-    } catch (error) {
-        next(error);
-    }
 };
 
-const checkNewChat = async (req, res, next) => {
-    try {
+const checkNewChat = async (req, res) => {
         const { userId } = res.locals.user;
         const newChatMessage = await chatService.checkChat({ userId });
         res.status(200).json({ result: 'success', newChatMessage });
-    } catch (error) {
-        next(error);
-    }
 };
+
+// 채팅방 삭제
+const deletechatroom = async (req, res) => {
+    const { userId } = res.locals.user
+    const { chatroomId } = req.params
+
+    const targetchatroom = await chatService.getTargetchatroom({ chatroomId })
+    if (targetchatroom.userId.toHexString() !== userId) {
+        return res
+            .status(200)
+            .json({ result: 'false' , message: "본인의 채팅방만 삭제할수있습니다"});
+    }
+    await chatService.deletechatroom({ chatroomId });
+    res.json({
+        result: 'success',
+        message: "성공"
+    });
+}
+
 
 // 이미지 파일(보류)
 // const postImage = async (req, res, next) => {
-//   try {
 //     const { sendUserId, receiveUserId } = req.body;
 //     const { location } = req.file;
 //     const chatText = location;
@@ -81,9 +85,6 @@ const checkNewChat = async (req, res, next) => {
 //       sample,
 //     });
 //     res.sendStatus(200);
-//   } catch (error) {
-//     next(error);
-//   }
 // };
 
-module.exports = { getChatListByUserId, getChatMessageByIds, checkNewChat };
+module.exports = { getChatListByUserId, getChatMessageByIds, checkNewChat, deletechatroom };
