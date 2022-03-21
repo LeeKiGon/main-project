@@ -64,7 +64,7 @@ const saveChatMessage = async ({
         });
 
         findChatRoom.lastChat = creatChat.chatMessageId;
-        if(findChatRoom.outUser !== '') findChatRoom.outUser = ''
+        if (findChatRoom.outUser !== '') findChatRoom.outUser = '';
         await findChatRoom.save();
         return;
     } catch (error) {
@@ -93,15 +93,19 @@ const getChatMessageByRoomNum = async ({
             throw new Error('잘못된 요청입니다.');
         }
         const findChatRoom = await ChatRoom.findOne({ roomNum });
-        if(findChatRoom.outUser === myProfile.userId) {
-            console.log(myProfile.userId)
-            console.log(findChatRoom.outUser)
-            findChatRoom.outUser = ''
+        if (findChatRoom.outUser === myProfile.userId) {
+            console.log(myProfile.userId);
+            console.log(findChatRoom.outUser);
+            findChatRoom.outUser = '';
             await findChatRoom.save();
         }
 
         if (findChatRoom) {
-            const findChatMessages = await ChatMessage.find({ $and : [{ chatRoomId: findChatRoom.chatRoomId }, {outUser: {$ne : myProfile.userId }}]
+            const findChatMessages = await ChatMessage.find({
+                $and: [
+                    { chatRoomId: findChatRoom.chatRoomId },
+                    { outUser: { $ne: myProfile.userId } },
+                ],
             })
                 .sort('createdAt')
                 // .skip(20 * (page - 1))
@@ -136,7 +140,15 @@ const getChatRoomList = async ({ userId }) => {
     try {
         //userId가 속해 있는 채팅방을 찾아내고 연결되어있는 lastChat과 from,to를 가져온다.
         const findChatRoomList = await ChatRoom.find({
-            $or: [{ userId }, { userId2: userId },{ outUser:{ $ne : userId }}]}).populate({
+            $and: [
+                {
+                    $or: [{ userId }, { userId2: userId }],
+                },
+                {
+                    outUser: { $ne: userId },
+                },
+            ],
+        }).populate({
             path: 'lastChat userId userId2',
         });
 
@@ -148,8 +160,9 @@ const getChatRoomList = async ({ userId }) => {
             const myUserInfo = findChatRoomList[i].userId;
             const notReadCount = await ChatMessage.count({
                 chatRoomId: findChatRoomList[i].chatRoomId,
-                toUserId: userId, checkChat : false
-            })
+                toUserId: userId,
+                checkChat: false,
+            });
             if (findChatRoomList[i].userId2.userId === userId) {
                 findChatRoomList[i]._doc.userId = findChatRoomList[i].userId2;
                 findChatRoomList[i]._doc.userId2 = myUserInfo;
@@ -165,63 +178,63 @@ const getChatRoomList = async ({ userId }) => {
 
 // 채팅을 읽었는지 확인하는 api
 const checkChat = async ({ userId }) => {
-    try{
-    const test = await User.findOne({ _id: userId }).populate('chatRooms');
-    
-    const findChatRoomList = await ChatRoom.find({
-        $or: [{ userId }, { userId2: userId }],
-    }).populate({
-        path: 'lastChat',
-        populate: { path: 'fromUserId toUserId' },
-    });
+    try {
+        const test = await User.findOne({ _id: userId }).populate('chatRooms');
 
-    let newChatMessage = false;
-    if (!findChatRoomList) {
-        return newChatMessage;
-    }
+        const findChatRoomList = await ChatRoom.find({
+            $or: [{ userId }, { userId2: userId }],
+        }).populate({
+            path: 'lastChat',
+            populate: { path: 'fromUserId toUserId' },
+        });
 
-    for (let i = 0; i < findChatRoomList.length; i++) {
-        let lastChat = findChatRoomList[i].lastChat;
-        if (findChatRoomList[i].lastChat) {
-            if (
-                lastChat.checkChat === false &&
-                lastChat.fromUserId.userId !== userId
-            )
-                return (newChatMessage = true);
+        let newChatMessage = false;
+        if (!findChatRoomList) {
+            return newChatMessage;
         }
-    }
+
+        for (let i = 0; i < findChatRoomList.length; i++) {
+            let lastChat = findChatRoomList[i].lastChat;
+            if (findChatRoomList[i].lastChat) {
+                if (
+                    lastChat.checkChat === false &&
+                    lastChat.fromUserId.userId !== userId
+                )
+                    return (newChatMessage = true);
+            }
+        }
         return newChatMessage;
-    }catch (error) {
+    } catch (error) {
         throw error;
     }
 };
 
 const getTargetchatroom = async ({ chatroomId }) => {
-    const targetchatroom = await ChatRoom.findOne({ _id: chatroomId })
+    const targetchatroom = await ChatRoom.findOne({ _id: chatroomId });
     return targetchatroom;
-}
+};
 
 const getOutChatRoom = async ({ chatroomId, userId }) => {
     const findChatRoom = await ChatRoom.findOne({ _id: chatroomId });
-    if(findChatRoom.outUser === '') {
-        findChatRoom.outUser = userId
-        console.log(findChatRoom.outUser)
-        await findChatRoom.save()
-        const findChatMessages = await ChatMessage.find({ chatroomId })
-        for(let message of findChatMessages) {
-            if(message.outUser !== '') {
-                await ChatMessage.deleteOne({ _id : message._id})
+    if (findChatRoom.outUser === '') {
+        findChatRoom.outUser = userId;
+        console.log(findChatRoom.outUser);
+        await findChatRoom.save();
+        const findChatMessages = await ChatMessage.find({ chatroomId });
+        for (let message of findChatMessages) {
+            if (message.outUser !== '') {
+                await ChatMessage.deleteOne({ _id: message._id });
             } else {
-                message.outUser = userId
+                message.outUser = userId;
                 await message.save();
             }
         }
         return;
     } else {
-        await ChatRoom.deleteOne({ _id : chatroomId })
+        await ChatRoom.deleteOne({ _id: chatroomId });
         return;
     }
-}
+};
 
 module.exports = {
     findAndUpdateChatRoom,
@@ -230,5 +243,5 @@ module.exports = {
     getChatRoomList,
     checkChat,
     getTargetchatroom,
-    getOutChatRoom
+    getOutChatRoom,
 };
