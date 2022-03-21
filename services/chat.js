@@ -209,7 +209,7 @@ const getOutChatRoom = async ({ chatroomId, userId }) => {
         await findChatRoom.save()
         const findChatMessages = await ChatMessage.find({ chatroomId })
         for(let message of findChatMessages) {
-            if(message.outUser) {
+            if(message.outUser !== '') {
                 await ChatMessage.deleteOne({ _id : message._id})
             } else {
                 message.outUser = userId
