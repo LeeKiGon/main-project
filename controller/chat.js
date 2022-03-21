@@ -53,11 +53,11 @@ const deletechatroom = async (req, res) => {
     const { chatroomId } = req.params
 
     const targetchatroom = await chatService.getTargetchatroom({ chatroomId })
-    if (targetchatroom.userId.toHexString() !== userId) {
-        return res
-            .status(200)
-            .json({ result: 'false' , message: "본인의 채팅방만 삭제할수있습니다"});
-    }
+    // if (targetchatroom.userId.toHexString() !== userId) {
+    //     return res
+    //         .status(200)
+    //         .json({ result: 'false' , message: "본인의 채팅방만 삭제할수있습니다"});
+    // }
     await chatService.getOutChatRoom({ chatroomId, userId });
     res.json({
         result: 'success',

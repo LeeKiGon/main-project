@@ -64,6 +64,7 @@ const saveChatMessage = async ({
         });
 
         findChatRoom.lastChat = creatChat.chatMessageId;
+        if(findChatRoom.outUser !== '') findChatRoom.outUser = ''
         await findChatRoom.save();
         return;
     } catch (error) {
@@ -100,7 +101,7 @@ const getChatMessageByRoomNum = async ({
         }
 
         if (findChatRoom) {
-            const findChatMessages = await ChatMessage.find({ $and : [{ chatRoomId: findChatRoom.chatRoomId },{ $not : { outUser: myProfile.userId }}]
+            const findChatMessages = await ChatMessage.find({ $and : [{ chatRoomId: findChatRoom.chatRoomId }, {outUser: {$not : myProfile.userId }}]
             })
                 .sort('createdAt')
                 // .skip(20 * (page - 1))
@@ -135,8 +136,7 @@ const getChatRoomList = async ({ userId }) => {
     try {
         //userId가 속해 있는 채팅방을 찾아내고 연결되어있는 lastChat과 from,to를 가져온다.
         const findChatRoomList = await ChatRoom.find({
-            $or: [{ userId }, { userId2: userId }, {$not : {outUser: userId}}],
-        }).populate({
+            $or: [{ userId }, { userId2: userId },{ outUser:{ $not : userId }}]}).populate({
             path: 'lastChat userId userId2',
         });
 
