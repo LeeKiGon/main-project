@@ -132,8 +132,8 @@ const updatePlan = async ({
         }
     }
     if (beforeDays > updateDays) {
-        for (let i = beforeDays+1; i > updateDays+1; i--) {
-            await Day.deleteOne({ planId, dayNumber: i})
+        for (let i = beforeDays + 1; i > updateDays + 1; i--) {
+            await Day.deleteOne({ planId, dayNumber: i });
         }
     }
 
@@ -203,6 +203,54 @@ const addThumbnail = async ({ thumbnailImage, planId }) => {
     }
 };
 
+const copyPlanByPlanId = async ({ planId, user }) => {
+    try {
+        const findPlan = await Plan.findOne({ _id: planId }).populate({
+            path: 'days',
+            populate: { path: 'places' },
+        });
+
+        const newPlan = new Plan({
+            userId: user.userId,
+            title: `${findPlan.nickname}님으로 부터 복사된 여행`,
+            nickname: user.nickname,
+            startDate: findPlan.startDate,
+            endDate: findPlan.endDate,
+            destination: findPlan.destination,
+            style: findPlan.style,
+            withlist: findPlan.withlist,
+            locations: findPlan.locations,
+        });
+
+        await newPlan.save();
+
+        for (
+            let i = 1;
+            i <= calculateDays(findPlan.startDate, findPlan.endDate) + 1;
+            i++
+        ){
+            const newDay = await Day.create({
+                planId: newPlan._id,
+                dayNumber: i,
+            });
+            for (let j = 0; j < findPlan.days[i - 1].places.length; j++) {
+                const newPlace = await Place.create({
+                    planId: findPlan.planId,
+                    dayId: newDay._id,
+                    placeName: findPlan.days[i - 1].places[j].placeName,
+                    time: findPlan.days[i - 1].places[j].time,
+                    lat: findPlan.days[i - 1].places[j].lat,
+                    lng: findPlan.days[i - 1].places[j].lng,
+                    address: findPlan.days[i - 1].places[j].address,
+                });
+            }
+        }
+        return;
+    } catch (error) {
+        throw error;
+    }
+};
+
 module.exports = {
     findAllPublicPlans,
     createPlan,
@@ -213,4 +261,5 @@ module.exports = {
     findAllPlanByUserId,
     addThumbnail,
     updatePlan,
+    copyPlanByPlanId
 };

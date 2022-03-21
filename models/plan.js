@@ -44,6 +44,9 @@ const PlanSchema = new mongoose.Schema({
     endDate: {
         type: String
     },
+    scrapCount: {
+        type: Number
+    },
 },
 {timestamps:true});
 

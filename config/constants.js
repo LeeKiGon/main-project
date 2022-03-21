@@ -40,7 +40,8 @@ const ROUTE = {
         DELETE: '/plans/:planId',
         GET_MY: '/myplans',
         ADD_THUMBNAIL: '/plans/:planId/thumbnail',
-        UPDATE: '/plans/:planId'
+        UPDATE: '/plans/:planId',
+        COPY: '/plans/:planId/copy'
     },
     AUTH: {
         KAKAO : '/auth/kakao',
