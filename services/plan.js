@@ -247,7 +247,7 @@ const copyPlanByPlanId = async ({ planId, user }) => {
         }
         findPlan.scrapCount++;
         await findPlan.save();
-        return;
+        return newPlan;
     } catch (error) {
         throw error;
     }

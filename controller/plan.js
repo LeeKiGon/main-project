@@ -139,11 +139,11 @@ const copyPlan = async (req, res) => {
     const { user } = res.locals;
     const { planId } = req.params;
 
-    await planService.copyPlanByPlanId({ planId, user });
-
+    const copyPlan = await planService.copyPlanByPlanId({ planId, user });
+    
     return res
     .status(200)
-    .json({ result: 'success', message: '복사 완료 되었습니다.' });
+    .json({ result: 'success', message: '복사 완료 되었습니다.', planId: copyPlan.planId });
 } 
 
 module.exports = {
