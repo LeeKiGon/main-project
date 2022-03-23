@@ -48,6 +48,9 @@ const PlanSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    copyplan: {
+        type: String,
+    }
 },
 {timestamps:true});
 

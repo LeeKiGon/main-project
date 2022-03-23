@@ -4,7 +4,6 @@ const User = require('../models/user');
 
 const findAndUpdateChatRoom = async ({ fromSnsId, toSnsId, roomNum }) => {
     try {
-        console.log(fromSnsId, toSnsId, roomNum);
         if (!fromSnsId || !toSnsId || !roomNum) {
             //   throw customizedError(MESSAGE.WRONG_REQ, 400);
             throw new Error('잘못된 요청입니다.');

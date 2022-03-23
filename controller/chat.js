@@ -25,7 +25,6 @@ const getChatMessageByIds = async (req, res) => {
             page,
             // chatCount,
         });
-        console.log(snsId, toSnsId)
         await chatService.findAndUpdateChatRoom({ fromSnsId: snsId , toSnsId, roomNum });
         return res
             .status(200)

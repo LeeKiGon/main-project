@@ -7,6 +7,24 @@ const SOCKET_CORS = {
     methods: ['GET', 'POST'],
 };
 
+const DIRECTORY = {
+    PLAN: {
+        destination: ['국내', '해외'],
+        style: [
+            '액티비티 체험',
+            '문화 예술 역사 체험',
+            '명소 관광지 방문 필수',
+            '페스티벌 참여',
+            '먹방 투어',
+            '쇼핑 좋아',
+            '편하게 쉬는 휴양',
+            'SNS 핫플 투어',
+            '호캉스',
+            '자연 친화',
+        ],
+    },
+};
+
 const ROUTE = {
     INDEX: '/',
     BOOKMARK: {
@@ -22,7 +40,7 @@ const ROUTE = {
         FIND: '/plans/:planId/comments',
         WRITE: '/plans/:planId/comments',
         UPDATE: '/plans/:planId/:commentId',
-        DELETE: '/plans/:planId/:commentId'
+        DELETE: '/plans/:planId/:commentId',
     },
     SEARCH: {
         SEARCH: '/plans/search',
@@ -30,9 +48,9 @@ const ROUTE = {
     REPLIES: {
         ADD: '/plans/comments/:commentId/reply',
         UPDATE: '/plans/comments/replies/:replyId',
-        DELETE: '/plans/comments/replies/:replyId'
+        DELETE: '/plans/comments/replies/:replyId',
     },
-    PLAN:{
+    PLAN: {
         GET_ALL: '/plans',
         ADD: '/plans',
         GET: '/plans/:planId',
@@ -48,29 +66,30 @@ const ROUTE = {
         GET_HOT_INTERNATINAL: '/plans/hotInternational',
     },
     AUTH: {
-        KAKAO : '/auth/kakao',
+        KAKAO: '/auth/kakao',
         KAKAO_CALLBACK: '/auth/kakao/callback',
         GET_MY_INFOMATION: '/users/auth/me',
         GET_USERS_INFOMATION: '/users/:userId',
         UPDATE_MY_INFOMATION: '/users/auth/me',
-        WITHDRAW: '/users/auth/me'
+        WITHDRAW: '/users/auth/me',
     },
     PLACES: {
         ADD: '/plans/days/:dayId',
         UPDATE: '/plans/days/places/:placeId',
         DELETE: '/plans/days/places/:placeId',
-        IMAGE_DELETE: '/plans/days/places/:placeId/:imageIndex'
+        IMAGE_DELETE: '/plans/days/places/:placeId/:imageIndex',
     },
     CHAT: {
         GET_MY_CHATROOMLIST: '/chat/list',
         GET_MY_NEWCHAT: '/chat/new',
         GET_MY_CHATMESSAGE: '/chat/:toSnsId',
-        DELETE: '/chat/:chatroomId'
-    }
+        DELETE: '/chat/:chatroomId',
+    },
 };
 
 module.exports = {
     SOCKET_CORS,
     MESSAGE,
     ROUTE,
+    DIRECTORY
 };

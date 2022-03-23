@@ -9,7 +9,7 @@ const getCommentByPlanId = async ({ planId }) => {
 };
 
 const getCommentLike = async (foundComment, user) => {
-   const commentLike = await Comment.findLike(foundComment, user);
+    const commentLike = await Comment.findLike(foundComment, user);
     return commentLike;
 };
 

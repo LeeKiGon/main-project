@@ -18,7 +18,6 @@ const addBookmark = async (req, res) => {
         userId,
         planId,
     });
-    console.log(findBookmark);
 
     if (findBookmark) {
         return res
@@ -42,7 +41,6 @@ const cancelBookmark = async (req, res) => {
         userId,
         planId,
     });
-    console.log(findBookmark);
 
     if (findBookmark) {
         return res

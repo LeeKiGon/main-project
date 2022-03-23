@@ -6,9 +6,7 @@ const findComment = async (req, res) => {
     const { planId } = req.params;
 
     const getComment = await CommentService.getCommentByPlanId({ planId });
-    console.log(getComment)
     const commentLike = await CommentService.getCommentLike(getComment, user);
-    console.log(commentLike)
     res.json({ comments: commentLike }); 
 }
 

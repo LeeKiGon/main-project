@@ -3,6 +3,20 @@ const Plan = require('../models/plan');
 const Place = require('../models/place');
 const Day = require('../models/day');
 const deleteS3 = require('../utils/deleteS3');
+const { DIRECTORY } = require('../config/constants');
+
+const firstDayCalculator = (now) => {
+    const dateNow = now;
+    dateNow.setDate(1);
+    return dateNow;
+};
+
+const nextMonthCalculator = (now) => {
+    const nextMonth = now;
+    nextMonth.setDate(1);
+    nextMonth.setMonth(nextMonth.getMonth() + 1);
+    return nextMonth;
+};
 
 const findOnePlanByPlanId = async ({ planId }) => {
     const findPlan = await Plan.findOne({ _id: planId });
@@ -13,27 +27,163 @@ const findAllPlanByUserId = async ({ userId }) => {
     return findPlan;
 };
 
-const findAllPublicPlans = async ({ page, user, destination, style }) => {
+const findLikePlanByDate = async () => {
+    const thisMonthPlan = await Plan.aggregate()
+        .match({
+            status: '공개',
+            updatedAt: {
+                $gte: firstDayCalculator(new Date()),
+                $lt: nextMonthCalculator(new Date()),
+            },
+        })
+        .lookup({
+            from: 'likes',
+            localField: '_id',
+            foreignField: 'planId',
+            as: 'planLikes',
+        })
+        .lookup({
+            from: 'bookmarks',
+            localField: '_id',
+            foreignField: 'planId',
+            as: 'planBookMarks',
+        })
+        .addFields({
+            bookmarkCount: { $size: '$planBookMarks' },
+            likeCount: { $size: '$planLikes' }
+        })
+        .sort('-likeCount')
+        .limit(10)
+        .lookup({
+            from: 'users',
+            localField: 'userId',
+            foreignField: '_id',
+            as: 'userInfo',
+        })
+        .unwind('$userInfo')
+        .project({
+            _id: 0,
+            planId: { $toString: '$_id' },
+            userId: {
+                userId: '$userInfo._id',
+                email: '$userInfo.email',
+                nickname: '$userInfo.nickname',
+                snsId: '$userInfo.snsId',
+                profile_img: '$userInfo.profile_img',
+            },
+            title: 1,
+            nickname: 1,
+            locations: 1,
+            destination: 1,
+            style: 1,
+            status: 1,
+            startDate: 1,
+            endDate: 1,
+            createdAt: 1,
+            updatedAt: 1,
+            withlist: 1,
+            scrapCount: 1,
+            thumbnailImage: 1,
+            likeCount: 1,
+            bookmarkCount: 1,
+            planLikes: 0,
+            planBookMarks: 0
+        })
+
+    console.log(thisMonthPlan);
+
+    return thisMonthPlan;
+};
+
+const findBookMarkPlanByDate = async () => {
+    const thisMonthPlan = await Plan.aggregate()
+        .match({
+            status: '공개',
+            updatedAt: {
+                $gte: firstDayCalculator(new Date()),
+                $lt: nextMonthCalculator(new Date()),
+            },
+        })
+        .lookup({
+            from: 'likes',
+            localField: '_id',
+            foreignField: 'planId',
+            as: 'planLikes',
+        })
+        .lookup({
+            from: 'bookmarks',
+            localField: '_id',
+            foreignField: 'planId',
+            as: 'planBookMarks',
+        })
+        .addFields({
+            bookmarkCount: { $size: '$planBookMarks' },
+            likeCount: { $size: '$planLikes' }
+        })
+        .sort('-bookmarkCount')
+        .limit(10)
+        .lookup({
+            from: 'users',
+            localField: 'userId',
+            foreignField: '_id',
+            as: 'userInfo',
+        })
+        .unwind('$userInfo')
+        .project({
+            _id: 0,
+            planId: { $toString: '$_id' },
+            userId: {
+                userId: '$userInfo._id',
+                email: '$userInfo.email',
+                nickname: '$userInfo.nickname',
+                snsId: '$userInfo.snsId',
+                profile_img: '$userInfo.profile_img',
+            },
+            title: 1,
+            nickname: 1,
+            locations: 1,
+            destination: 1,
+            style: 1,
+            status: 1,
+            startDate: 1,
+            endDate: 1,
+            createdAt: 1,
+            updatedAt: 1,
+            withlist: 1,
+            scrapCount: 1,
+            thumbnailImage: 1,
+            likeCount: 1,
+            bookmarkCount: 1,
+            planLikes: 0,
+            planBookMarks: 0
+        });
+
+    console.log(thisMonthPlan);
+
+    return thisMonthPlan;
+};
+
+const findAllPublicPlans = async ({ page, user, destination, style, sort }) => {
     page === undefined || page < 0 ? (page = 1) : +page;
     destination === undefined
-        ? (destination = ['국내', '해외'])
+        ? (destination = DIRECTORY.PLAN.destination)
         : (destination = [destination]);
+    style === undefined ? (style = DIRECTORY.PLAN.style) : (style = [style]);
 
-    if (typeof style === 'string') {
-        style = [style];
-    }
-    console.log('스타일 :', style);
-    if (style === undefined) {
-        const numPlans = await Plan.count({
-            destination: { $in: destination },
-            status: '공개',
-        });
-        const endPage = numPlans === 0 ? 1 : Math.ceil(numPlans / 5);
+    const numPlans = await Plan.count({
+        destination: { $in: destination },
+        style: { $in: style },
+        status: '공개',
+    });
+    const endPage = numPlans === 0 ? 1 : Math.ceil(numPlans / 5);
+
+    if (sort === undefined) {
         const findPage = await Plan.find({
             destination: { $in: destination },
+            style: { $in: style },
             status: '공개',
         })
-            .sort('-createdAt')
+            .sort('-updatedAt')
             .skip(5 * (page - 1))
             .limit(5)
             .populate(
@@ -44,30 +194,128 @@ const findAllPublicPlans = async ({ page, user, destination, style }) => {
         const plansLikeBookmark = await Plan.findLikeBookmark(findPage, user);
         return { plans: plansLikeBookmark, endPage };
     } else {
-        const numPlans = await Plan.count({
-            destination: { $in: destination },
-            style: { $all: style },
-            status: '공개',
-        });
-        const endPage = numPlans === 0 ? 1 : Math.ceil(numPlans / 5);
-        const findByStyle = await Plan.find({
-            destination: { $in: destination },
-            style: { $all: style },
+        user === undefined ? (user = { _id: 0 }) : user;
+
+        const findPlan = await Plan.aggregate()
+        .match({
+            destination: {
+                $in: destination,
+            },
+            style: {
+                $in: style,
+            },
             status: '공개',
         })
-            .sort('-createdAt')
-            .skip(5 * (page - 1))
-            .limit(5)
-            .populate(
-                'userId likeCount bookmarkCount',
-                'snsId email nickname profile_img'
-            );
-
-        const plansLikeBookmark = await Plan.findLikeBookmark(
-            findByStyle,
-            user
-        );
-        return { plans: plansLikeBookmark, endPage };
+        .lookup({
+            from: 'likes',
+            localField: '_id',
+            foreignField: 'planId',
+            as: 'planLikes',
+        })
+        .lookup({
+            from: 'bookmarks',
+            localField: '_id',
+            foreignField: 'planId',
+            as: 'planbookMarks',
+        })
+        .lookup({
+            from: 'users',
+            localField: 'userId',
+            foreignField: '_id',
+            as: 'userInfo',
+        })
+        .lookup({
+            from: 'likes',
+            let: {
+                thisPlanId: '$_id',
+            },
+            pipeline: [
+                {
+                    $match: {
+                        $expr: {
+                            $and: [
+                                { $eq: ['$userId', user._id] },
+                                { $eq: ['$planId', '$$thisPlanId'] },
+                            ],
+                        },
+                    },
+                },
+            ],
+            as: 'isLikeList',
+        })
+        .lookup({
+            from: 'bookmarks',
+            let: {
+                thisPlanId: '$_id',
+            },
+            pipeline: [
+                {
+                    $match: {
+                        $expr: {
+                            $and: [
+                                { $eq: ['$userId', user._id] },
+                                { $eq: ['$planId', '$$thisPlanId'] },
+                            ],
+                        },
+                    },
+                },
+            ],
+            as: 'isBookMarkList',
+        })
+        .addFields({
+            totalCount: {
+                $sum: [
+                    { $size: '$planLikes' },
+                    { $size: '$planbookMarks' },
+                    '$scrapCount',
+                ],
+            },
+        })
+        .sort('-totalCount')
+        .skip(5 * (page - 1))
+        .limit(5)
+        .unwind('$userInfo')
+        .project({
+            _id: 0,
+            planId: { $toString: '$_id' },
+            userId: {
+                userId: '$userInfo._id',
+                email: '$userInfo.email',
+                nickname: '$userInfo.nickname',
+                snsId: '$userInfo.snsId',
+                profile_img: '$userInfo.profile_img',
+            },
+            title: 1,
+            nickname: 1,
+            locations: 1,
+            destination: 1,
+            style: 1,
+            status: 1,
+            startDate: 1,
+            endDate: 1,
+            createdAt: 1,
+            updatedAt: 1,
+            withlist: 1,
+            scrapCount: 1,
+            thumbnailImage: 1,
+            likeCount: { $size: '$planLikes' },
+            bookmarkCount: { $size: '$planbookMarks' },
+            isLike: {
+                $cond: {
+                    if: { $gte: [{ $size: '$isLikeList' }, 1] },
+                    then: true,
+                    else: false,
+                },
+            },
+            isBookMark: {
+                $cond: {
+                    if: { $gte: [{ $size: '$isBookMarkList' }, 1] },
+                    then: true,
+                    else: false,
+                },
+            },
+        })
+        return { plans: findPlan, endPage };
     }
 };
 
@@ -144,7 +392,7 @@ const updatePlan = async ({
     findPlan.style = style;
     findPlan.withlist = withlist;
 
-    await findPlan.save();
+    await findPlan.save({ timestamps: false });
 
     return findPlan;
 };
@@ -178,6 +426,7 @@ const changePlanByPlanId = async ({ findPlan, status }) => {
     await findPlan.save();
     return;
 };
+
 const deletePlanByPlanId = async ({ planId }) => {
     const findPlaces = await Place.find({ planId });
     let S3DeleteList = [];
@@ -196,7 +445,7 @@ const addThumbnail = async ({ thumbnailImage, planId }) => {
         const findPlan = await Plan.findOne({ _id: planId });
         if (findPlan.thumbnailImage) deleteS3([findPlan.thumbnailImage]);
         findPlan.thumbnailImage = thumbnailImage;
-        await findPlan.save();
+        await findPlan.save({ timestamps: false });
         return;
     } catch (error) {
         throw error;
@@ -220,6 +469,7 @@ const copyPlanByPlanId = async ({ planId, user }) => {
             style: findPlan.style,
             withlist: findPlan.withlist,
             locations: findPlan.locations,
+            copyplan: '가져온 여행',
         });
 
         await newPlan.save();
@@ -228,7 +478,7 @@ const copyPlanByPlanId = async ({ planId, user }) => {
             let i = 1;
             i <= calculateDays(findPlan.startDate, findPlan.endDate) + 1;
             i++
-        ){
+        ) {
             const newDay = await Day.create({
                 planId: newPlan._id,
                 dayNumber: i,
@@ -246,7 +496,7 @@ const copyPlanByPlanId = async ({ planId, user }) => {
             }
         }
         findPlan.scrapCount++;
-        await findPlan.save();
+        await findPlan.save({ timestamps: false });
         return newPlan;
     } catch (error) {
         throw error;
@@ -263,5 +513,7 @@ module.exports = {
     findAllPlanByUserId,
     addThumbnail,
     updatePlan,
-    copyPlanByPlanId
+    copyPlanByPlanId,
+    findLikePlanByDate,
+    findBookMarkPlanByDate,
 };

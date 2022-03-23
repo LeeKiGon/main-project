@@ -9,6 +9,12 @@ const imageUploder = upload.single('imageFile');
 
 const { ROUTE } = require('../config/constants');
 
+// 이번달 북마크 검색
+router.get(ROUTE.PLAN.GET_HOT_BOOKMARK, authMiddleware, planController.getMostBookMarkedPlans);
+
+// 이번달 좋아요 검색
+router.get(ROUTE.PLAN.GET_HOT_LIKE, authMiddleware, planController.getMostLikedPlans);
+
 // 전체 여행 불러오기
 router.get(ROUTE.PLAN.GET_ALL, authMiddleware, planController.getAllPlans);
 

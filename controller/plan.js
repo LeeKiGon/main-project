@@ -2,17 +2,40 @@ const planService = require('../services/plan');
 
 const getAllPlans = async (req, res) => {
     const { user } = res.locals;
-    let { page, destination, style } = req.query;
+    let { page, destination, style, sort } = req.query;
 
     const findAllPublicPlans = await planService.findAllPublicPlans({
         page,
         user,
         destination,
         style,
+        sort,
     });
 
     return res.json(findAllPublicPlans);
 };
+
+const getMostLikedPlans = async (req, res) => {
+    
+    const findPlans = await planService.findLikePlanByDate()
+
+    return res.json({
+        result: 'success',
+        message: '성공',
+        plans: findPlans
+    })
+}
+
+const getMostBookMarkedPlans = async (req, res) => {
+    
+    const findPlans = await planService.findBookMarkPlanByDate()
+
+    return res.json({
+        result: 'success',
+        message: '성공',
+        plans: findPlans
+    })
+}
 
 const addNewPlan = async (req, res) => {
     const { user } = res.locals;
@@ -141,6 +164,8 @@ const copyPlan = async (req, res) => {
 
     const copyPlan = await planService.copyPlanByPlanId({ planId, user });
     
+    const io = require('../config/socket').getIo();
+    io.to(user.snsId).emit('new', 1);
     return res
     .status(200)
     .json({ result: 'success', message: '복사 완료 되었습니다.', planId: copyPlan.planId });
@@ -155,5 +180,7 @@ module.exports = {
     getMyPlans,
     addNewThumbnail,
     updatePlanInfo,
-    copyPlan
+    copyPlan,
+    getMostLikedPlans,
+    getMostBookMarkedPlans
 };
