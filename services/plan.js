@@ -86,6 +86,8 @@ const findLikePlanByDate = async () => {
             thumbnailImage: 1,
             likeCount: 1,
             bookmarkCount: 1,
+        })
+        .project({
             planLikes: 0,
             planBookMarks: 0
         })
@@ -154,8 +156,8 @@ const findBookMarkPlanByDate = async () => {
             thumbnailImage: 1,
             likeCount: 1,
             bookmarkCount: 1,
-            planLikes: 0,
-            planBookMarks: 0
+            // planLikes: 0,
+            // planBookMarks: 0
         });
 
     console.log(thisMonthPlan);
