@@ -1,5 +1,7 @@
 //스키마
 const Like = require('../models/like');
+const Comment = require('../models/comment')
+const Reply = require('../models/reply')
 
 //userId, planId, type으로 DB에 있는지 확인하기
 const findLikeByUserIdAndIdAndType = async ({ userId, Id, type }) => {
@@ -21,25 +23,29 @@ const findLikeByUserIdAndIdAndType = async ({ userId, Id, type }) => {
 const createLike = async ({ userId, Id, type }) => {
     try {
         if (type === 'plan') {
-            await Like.create({
+            const createLike = await Like.create({
                 userId,
                 planId: Id,
             });
-            return;
+            return createLike;
         }
         if (type === 'comment') {
-            await Like.create({
+            const findComment = await Comment.findOne({ _id: Id });
+            const createLike = await Like.create({
                 userId,
                 commentId: Id,
+                planId: findComment.planId
             });
-            return;
+            return createLike;
         }
         if (type === 'reply') {
-            await Like.create({
+            const findReply = await Reply.findOne({ _id: Id });
+            const createLike = await Like.create({
                 userId,
                 replyId: Id,
+                planId: findReply.planId
             });
-            return;
+            return createLike;
         }
     } catch (error) {
         throw error;

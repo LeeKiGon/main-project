@@ -1,12 +1,18 @@
 //스키마
 const Bookmark = require('../models/bookmark');
+const Plan = require('../models/plan');
 
 //userId로 populate해서 북마크 된 plan 모두 가져오기
-const getBookmarkByUserId = async ({ userId }) => {
-    const getBookmarks = await Bookmark.find({ userId }).populate({
+const getBookmarkByUserId = async ({ user }) => {
+    
+    const getBookmarks = await Bookmark.find({ userId: user.userId }).populate({
         path: 'planId',
         populate: { path: 'userId' },
     });
+
+    for(let bookmark of getBookmarks) {
+        await Plan.findLikeBookmark([bookmark.planId], user)
+    }
 
     return getBookmarks;
 };

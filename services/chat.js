@@ -15,12 +15,13 @@ const findAndUpdateChatRoom = async ({ fromSnsId, toSnsId, roomNum }) => {
 
         // 기존 채팅 방이 없으면 생성 후 리턴
         if (!findChatRoom) {
-            await ChatRoom.create({
+            const newRoom = new ChatRoom({
                 userId: findUser.userId,
                 userId2: findUser2.userId,
                 roomNum,
             });
-            return;
+            await newRoom.save()
+            return newRoom;
         }
         // 기존 채팅 방이 있으면 해당 채팅방의 checkChat 전부 true로 업데이트 후 리턴
         await ChatMessage.where({
@@ -28,7 +29,7 @@ const findAndUpdateChatRoom = async ({ fromSnsId, toSnsId, roomNum }) => {
             fromUserId: findUser2,
         }).updateMany({ checkChat: 'true' });
 
-        return;
+        return false;
     } catch (error) {
         throw error;
     }

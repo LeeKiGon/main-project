@@ -1,4 +1,5 @@
 const Reply = require('../models/reply');
+const Comment = require('../models/comment')
 
 const getTargetReply = async ({ replyId }) => {
     const targetReply = await Reply.findOne({ _id: replyId });
@@ -6,15 +7,18 @@ const getTargetReply = async ({ replyId }) => {
 }
 
 //댓글에 답글 생성
-const createReply = async ({ userId, content, planId, commentId }) => {
+const createReply = async ({ userId, content, commentId }) => {
     try {
-        await Reply.create({
+        const findComment = await Comment.findOne({_id: commentId })
+
+        const newReply = new Reply({
             userId,
             commentId,
             content,
-            planId,
+            planId: findComment.planId,
         });
-        return;
+        await newReply.save();
+        return newReply;
     } catch (error) {
         throw error;
     }

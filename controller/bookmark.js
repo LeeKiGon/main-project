@@ -2,9 +2,9 @@ const BookMarkService = require('../services/bookmark');
 
 //북마크 불러오기
 const findBookmark = async (req, res) => {
-    const { userId } = res.locals.user;
+    const { user } = res.locals;
 
-    const getBookmark = await BookMarkService.getBookmarkByUserId({ userId });
+    const getBookmark = await BookMarkService.getBookmarkByUserId({ user });
 
     return res.json({ result: 'success', plans: getBookmark });
 };

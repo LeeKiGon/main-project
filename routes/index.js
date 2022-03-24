@@ -10,6 +10,7 @@ const bookmarksRouter = require('./bookmarks');
 const repliesRouter = require('./replies');
 const searchRouter = require('./search');
 const chatsRouter = require('./chats');
+const noticesRouter = require('./notices')
 
 const { ROUTE } = require("../config/constants");
 
@@ -22,6 +23,7 @@ router.use(ROUTE.INDEX, repliesRouter);
 router.use(ROUTE.INDEX, chatsRouter);
 router.use(ROUTE.INDEX, commentsRouter);
 router.use(ROUTE.INDEX, plansRouter);
+router.use(ROUTE.INDEX, noticesRouter)
 
 
 module.exports = router;

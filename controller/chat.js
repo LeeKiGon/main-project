@@ -4,6 +4,7 @@ const chatService = require('../services/chat');
 
 // const { S3_HOST } = process.env;
 // const { DIRECTORY } = require("../config/constants");
+const NoticeService = require('../services/notice')
 
 const roomNumMaker = (x, y) => {
     const arr = [x, y];
@@ -13,19 +14,20 @@ const roomNumMaker = (x, y) => {
 };
 
 const getChatMessageByIds = async (req, res) => {
-        const { snsId } = res.locals.user;
+        const { user } = res.locals;
         const { page } = req.query;
         const { toSnsId } = req.params; //상대방꺼 userId임
 
         const roomNum = await roomNumMaker(snsId, toSnsId);
         const getChat = await chatService.getChatMessageByRoomNum({
-            fromSnsId: snsId,
+            fromSnsId: user.snsId,
             toSnsId,
             roomNum,
             page,
             // chatCount,
         });
-        await chatService.findAndUpdateChatRoom({ fromSnsId: snsId , toSnsId, roomNum });
+        const checkFirst = await chatService.findAndUpdateChatRoom({ fromSnsId: user.snsId , toSnsId, roomNum });
+        if(checkFirst) await NoticeService.createNewChatNoticeMessage({sentUser: user, document: checkFirst})
         return res
             .status(200)
             .json({ result: 'success', chatMessages: getChat });

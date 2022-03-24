@@ -1,17 +1,19 @@
 const ReplyService = require('../services/replies');
+const NoticeService = require('../services/notice')
 
 //댓글에 답글 작성
 const postReply = async (req, res, next) => {
-        const { userId } = res.locals.user;
+        const { user } = res.locals;
         const { content } = req.body;
-        const { planId, commentId } = req.params;
+        const { commentId } = req.params;
 
-        await ReplyService.createReply({
-            userId,
+        const newReply = await ReplyService.createReply({
+            userId: user.userId,
             content,
-            planId,
             commentId,
         });
+
+        await NoticeService.createNewCommentReplyNoticeMessage({ sentUser: user , document: newReply, type: 'reply' });
 
         res.json({ 
             result: 'success', 

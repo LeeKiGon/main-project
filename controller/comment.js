@@ -1,4 +1,5 @@
 const CommentService = require('../services/comment');
+const NoticeService = require('../services/notice');
 
 //여행에 달린 댓글 조회
 const findComment = async (req, res) => {
@@ -12,15 +13,17 @@ const findComment = async (req, res) => {
 
 //여행 댓글 작성
 const writeComment = async (req, res) => {
-    const { userId } = res.locals.user;
+    const { user } = res.locals;
     const { content } = req.body;
     const { planId } = req.params;
     
-    await CommentService.createComment({
-        userId,
+    const newComment = await CommentService.createComment({
+        userId: user.userId,
         content,
         planId
     });
+
+    await NoticeService.createNewCommentReplyNoticeMessage({ sentUser: user , document: newComment, type: 'comment' });
 
     res.json({
         result: 'success',

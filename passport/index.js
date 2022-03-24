@@ -1,12 +1,12 @@
 const passport = require('passport');
 const kakaoStrategy = require('passport-kakao').Strategy;
 
+const NoticeService = require('../services/notice')
 const User = require('../models/user');
 
 const { KAKAO_CLIENT_SECRET, KAKAO_CLIENT_ID, DOMAIN } = process.env;
 
 const callbackURL = (platform) => `${DOMAIN}/api/auth/${platform}/callback`
-console.log(callbackURL('kakao'))
 
 module.exports = (app) => {
     app.use(passport.initialize());
@@ -24,6 +24,7 @@ module.exports = (app) => {
                         provider: profile.provider,
                     });
                     if (findExistUser) {
+                        await NoticeService.createNewNoticeBoard({ user : newUser })
                         done(null, findExistUser);
                     } else {
                         const newUser = await User.create({
@@ -36,6 +37,8 @@ module.exports = (app) => {
                                 profile._json.properties.thumbnail_image,
                             provider: 'kakao',
                         });
+
+                        await NoticeService.createNewNoticeBoard({ user : newUser })
                         done(null, newUser);
                     }
                 } catch (error) {

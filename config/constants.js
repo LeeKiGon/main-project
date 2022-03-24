@@ -25,6 +25,21 @@ const DIRECTORY = {
     },
 };
 
+const NOTICE_EVENT = {
+    LIKE : {
+        PLAN : '님이 회원님의 여행✈에 쪼아요❤️를 눌렀어요.',
+        COMMENT: '님이 회원님의 댓글💌에 쪼아요❤️를 눌렀어요.',
+        REPLY : '님이 회원님의 답글🎀에 쪼아요❤️를 눌렀어요.'
+    },
+    COMMENT : {
+        PLAN : '님이 회원님의 여행✈에 댓글을 남겼어요.',
+        COMMENT: '님이 회원님의 댓글🤩에 답글을 남겼어요.',
+    },
+    MESSAGE : {
+        CHAT : '님이 대화💬를 요청했어요! 채팅방을 확인해주세요.'
+    }
+};
+
 const ROUTE = {
     INDEX: '/',
     BOOKMARK: {
@@ -85,11 +100,17 @@ const ROUTE = {
         GET_MY_CHATMESSAGE: '/chat/:toSnsId',
         DELETE: '/chat/:chatroomId',
     },
+    NOTICE: {
+        GET_MY : '/notice',
+        DELETE_NOTICE : '/notice/:noticeMessageId',
+        DELETE_ALL_NOTICE : '/notice'
+    }
 };
 
 module.exports = {
     SOCKET_CORS,
     MESSAGE,
     ROUTE,
-    DIRECTORY
+    DIRECTORY,
+    NOTICE_EVENT
 };
