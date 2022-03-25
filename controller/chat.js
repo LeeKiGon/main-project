@@ -15,6 +15,7 @@ const roomNumMaker = (x, y) => {
 
 const getChatMessageByIds = async (req, res) => {
         const { user } = res.locals;
+        const { snsId } = res.locals.user;
         const { page } = req.query;
         const { toSnsId } = req.params; //상대방꺼 userId임
 
