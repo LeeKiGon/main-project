@@ -38,8 +38,8 @@ module.exports = (app) => {
                             provider: 'kakao',
                         });
 
-                        await NoticeService.createNewNoticeBoard({ user : newUser })
-                        done(null, newUser);
+                        // await NoticeService.createNewNoticeBoard({ user : newUser })
+                        // done(null, newUser);
                     }
                 } catch (error) {
                     console.error(error);
