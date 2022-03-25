@@ -87,6 +87,7 @@ io.on('connection', (socket) => {
             // getChat.fromSnsId = fromSnsId;
             io.to(roomNum).emit('chat', chatMessage);
             io.to(toSnsId).emit('list', chatMessage);
+            console.log(toSnsId)
         } catch (error) {
             console.log(error);
         }
