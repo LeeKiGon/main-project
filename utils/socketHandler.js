@@ -53,6 +53,7 @@ io.on('connection', (socket) => {
         try {
             const roomNum = await roomNumMaker(fromSnsId, toSnsId);
             socket.leave(roomNum);
+            socket.join(fromSnsId);
         } catch (error) {
             console.log(error);
         }
