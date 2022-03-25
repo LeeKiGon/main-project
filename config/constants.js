@@ -98,7 +98,7 @@ const ROUTE = {
         GET_MY_CHATROOMLIST: '/chat/list',
         GET_MY_NEWCHAT: '/chat/new',
         GET_MY_CHATMESSAGE: '/chat/:toSnsId',
-        DELETE: '/chat/:chatroomId',
+        DELETE: '/chat/:chatRoomId',
     },
     NOTICE: {
         GET_MY : '/notice',
