@@ -95,6 +95,7 @@ const getChatMessageByRoomNum = async ({
         const findChatRoom = await ChatRoom.findOne({ roomNum });
         if (findChatRoom.outUser === myProfile.userId) {
             console.log(myProfile.userId);
+            console.log(yourProfile.snsId);
             console.log(findChatRoom.outUser);
             findChatRoom.outUser = '';
             await findChatRoom.save();
@@ -209,18 +210,14 @@ const checkChat = async ({ userId }) => {
     }
 };
 
-const getTargetchatroom = async ({ chatroomId }) => {
-    const targetchatroom = await ChatRoom.findOne({ _id: chatroomId });
-    return targetchatroom;
-};
-
-const getOutChatRoom = async ({ chatroomId, userId }) => {
-    const findChatRoom = await ChatRoom.findOne({ _id: chatroomId });
+const getOutChatRoom = async ({ chatRoomId, userId }) => {
+    const findChatRoom = await ChatRoom.findOne({ _id: chatRoomId });
     if (findChatRoom.outUser === '') {
         findChatRoom.outUser = userId;
         console.log(findChatRoom.outUser);
         await findChatRoom.save();
-        const findChatMessages = await ChatMessage.find({ chatroomId });
+        const findChatMessages = await ChatMessage.find({ chatRoomId });
+        console.log('파인드챗메세지',findChatMessages)
         for (let message of findChatMessages) {
             if (message.outUser !== '') {
                 await ChatMessage.deleteOne({ _id: message._id });
@@ -231,7 +228,7 @@ const getOutChatRoom = async ({ chatroomId, userId }) => {
         }
         return;
     } else {
-        await ChatRoom.deleteOne({ _id: chatroomId });
+        await ChatRoom.deleteOne({ _id: chatRoomId });
         return;
     }
 };
@@ -242,6 +239,5 @@ module.exports = {
     getChatMessageByRoomNum,
     getChatRoomList,
     checkChat,
-    getTargetchatroom,
     getOutChatRoom,
 };

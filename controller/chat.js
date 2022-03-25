@@ -52,42 +52,14 @@ const checkNewChat = async (req, res) => {
 // 채팅방 삭제
 const deletechatroom = async (req, res) => {
     const { userId } = res.locals.user
-    const { chatroomId } = req.params
+    const { chatRoomId } = req.params
+    console.log('챗룸아이디',chatroomId)
 
-    const targetchatroom = await chatService.getTargetchatroom({ chatroomId })
-    // if (targetchatroom.userId.toHexString() !== userId) {
-    //     return res
-    //         .status(200)
-    //         .json({ result: 'false' , message: "본인의 채팅방만 삭제할수있습니다"});
-    // }
-    await chatService.getOutChatRoom({ chatroomId, userId });
+    await chatService.getOutChatRoom({ chatRoomId, userId });
     res.json({
         result: 'success',
         message: "성공"
     });
 }
-
-
-// 이미지 파일(보류)
-// const postImage = async (req, res, next) => {
-//     const { sendUserId, receiveUserId } = req.body;
-//     const { location } = req.file;
-//     const chatText = location;
-//     const checkChat = false;
-//     const chatType = DIRECTORY.IMAGE;
-//     const sample = null;
-//     const roomNum = await roomNumMaker(sendUserId, receiveUserId);
-
-//     await chatService.createChat({
-//       roomNum,
-//       sendUserId,
-//       receiveUserId,
-//       chatText,
-//       checkChat,
-//       chatType,
-//       sample,
-//     });
-//     res.sendStatus(200);
-// };
 
 module.exports = { getChatListByUserId, getChatMessageByIds, checkNewChat, deletechatroom };

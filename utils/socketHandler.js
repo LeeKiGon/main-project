@@ -26,6 +26,7 @@ io.on('connection', (socket) => {
         const arr = [x, y];
         arr.sort((a, b) => a - b);
         let roomNum = arr[0].toString() + arr[1];
+        console.log(roomNum)
         return roomNum;
     };
 
@@ -89,20 +90,5 @@ io.on('connection', (socket) => {
             console.log(error);
         }
     });
-
-    //     // socket file (track, image) post
-    //     socket.on('file', async ({ receiveUserId, sendUserId, chatType }) => {
-    //         try {
-    //             const roomNum = await roomNumMaker(sendUserId, receiveUserId);
-    //             const getChat = await chatService.getChatByIds({
-    //                 receiveUserId,
-    //                 sendUserId,
-    //                 chatType,
-    //             });
-    //             io.to(roomNum).emit('chat', getChat);
-    //             io.to(receiveUserId).emit('list', getChat);
-    //         } catch (error) {
-    //             console.log(error);
-    //         }
-    //     });
 });
+
