@@ -1,7 +1,6 @@
 const Plan = require('../models/plan');
 
 const getSearch = async ({ page, query, style, user }) => {
-    console.log(query);
     page === undefined || page < 0 ? (page = 1) : +page;
     if (style === undefined) {
         const numPlans = await Plan.count({

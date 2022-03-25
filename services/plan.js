@@ -92,8 +92,6 @@ const findLikePlanByDate = async () => {
             planBookMarks: 0
         })
 
-    console.log(thisMonthPlan);
-
     return thisMonthPlan;
 };
 
@@ -161,8 +159,6 @@ const findBookMarkPlanByDate = async () => {
             planLikes: 0,
             planBookMarks: 0
         })
-
-    console.log(thisMonthPlan);
 
     return thisMonthPlan;
 };

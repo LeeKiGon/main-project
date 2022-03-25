@@ -8,11 +8,10 @@ const addLike = async (req, res) => {
 
     let type = '';
     let num = req.originalUrl.split('/').length;
-    console.log(num)
     if (num === 5) type = 'plan';
     if (num === 6) type = 'comment';
     if (num === 7) type = 'reply';
-    console.log(type)
+
     const findLike = await LikeService.findLikeByUserIdAndIdAndType({
         userId: user.userId,
         Id,
@@ -26,8 +25,9 @@ const addLike = async (req, res) => {
     }
 
     const createLike = await LikeService.createLike({ userId: user.userId, Id, type });
-    console.log(createLike)
+
     await NoticeService.createNewLikeNoticeMessage({ sentUser: user , document: createLike, type });
+
     res.json({
         result: 'success',
         message: '성공',
@@ -38,6 +38,7 @@ const addLike = async (req, res) => {
 const cancelLike = async (req, res) => {
     const { userId } = res.locals.user;
     const { Id } = req.params;
+    
     let type = '';
     let num = req.originalUrl.split('/').length;
     if (num === 5) type = 'plan';

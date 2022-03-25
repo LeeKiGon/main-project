@@ -9,7 +9,6 @@ const updateUserInfo = async (req, res, next) => {
         const { nickname } = req.body;
         let profile_img = '';
         if (req.file) profile_img = req.file.location;
-        console.log(nickname);
 
         await userService.updateUserInfo({
             userId,

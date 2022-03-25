@@ -164,8 +164,8 @@ const copyPlan = async (req, res) => {
 
     const copyPlan = await planService.copyPlanByPlanId({ planId, user });
     
-    const io = require('../config/socket').getIo();
-    io.to('21428643792142969908').emit('new', copyPlan);
+    // const io = require('../config/socket').getIo();
+    // io.to('21428643792142969908').emit('new', copyPlan);
     return res
     .status(200)
     .json({ result: 'success', message: '복사 완료 되었습니다.', planId: copyPlan.planId });

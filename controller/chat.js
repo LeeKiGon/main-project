@@ -53,7 +53,6 @@ const checkNewChat = async (req, res) => {
 const deletechatroom = async (req, res) => {
     const { userId } = res.locals.user
     const { chatRoomId } = req.params
-    console.log('챗룸아이디',chatroomId)
 
     await chatService.getOutChatRoom({ chatRoomId, userId });
     res.json({

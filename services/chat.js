@@ -94,9 +94,6 @@ const getChatMessageByRoomNum = async ({
         }
         const findChatRoom = await ChatRoom.findOne({ roomNum });
         if (findChatRoom.outUser === myProfile.userId) {
-            console.log(myProfile.userId);
-            console.log(yourProfile.snsId);
-            console.log(findChatRoom.outUser);
             findChatRoom.outUser = '';
             await findChatRoom.save();
         }
@@ -214,10 +211,8 @@ const getOutChatRoom = async ({ chatRoomId, userId }) => {
     const findChatRoom = await ChatRoom.findOne({ _id: chatRoomId });
     if (findChatRoom.outUser === '') {
         findChatRoom.outUser = userId;
-        console.log(findChatRoom.outUser);
         await findChatRoom.save();
         const findChatMessages = await ChatMessage.find({ chatRoomId });
-        console.log('파인드챗메세지',findChatMessages)
         for (let message of findChatMessages) {
             if (message.outUser !== '') {
                 await ChatMessage.deleteOne({ _id: message._id });
