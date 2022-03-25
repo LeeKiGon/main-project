@@ -24,7 +24,7 @@ module.exports = (app) => {
                         provider: profile.provider,
                     });
                     if (findExistUser) {
-                        // await NoticeService.createNewNoticeBoard({ user : newUser })
+                        await NoticeService.createNewNoticeBoard({ user : findExistUser })
                         done(null, findExistUser);
                     } else {
                         const newUser = await User.create({
@@ -38,7 +38,7 @@ module.exports = (app) => {
                             provider: 'kakao',
                         });
 
-                        // await NoticeService.createNewNoticeBoard({ user : newUser })
+                        await NoticeService.createNewNoticeBoard({ user : newUser })
                         done(null, newUser);
                     }
                 } catch (error) {
