@@ -7,13 +7,13 @@ const postReply = async (req, res, next) => {
         const { content } = req.body;
         const { commentId } = req.params;
 
-        const newReply = await ReplyService.createReply({
+        await ReplyService.createReply({
             userId: user.userId,
             content,
             commentId,
         });
 
-        await NoticeService.createNewCommentReplyNoticeMessage({ sentUser: user , document: newReply, type: 'reply' });
+        await NoticeService.createNewCommentReplyNoticeMessage({ sentUser: user , Id: commentId, type: 'reply' });
 
         res.json({ 
             result: 'success', 

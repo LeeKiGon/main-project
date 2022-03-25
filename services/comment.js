@@ -16,14 +16,13 @@ const getCommentLike = async (foundComment, user) => {
 
 const createComment = async ({ userId, content, planId }) => {
     try {
-        const newComment = new Comment({
+        await Comment.create({
             userId,
             content,
             planId,
         });
 
-        await newComment.save();
-        return newComment;
+        return;
     } catch (error) {
         throw error;
     }

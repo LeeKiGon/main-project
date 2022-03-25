@@ -11,14 +11,14 @@ const createReply = async ({ userId, content, commentId }) => {
     try {
         const findComment = await Comment.findOne({_id: commentId })
 
-        const newReply = new Reply({
+        await Reply.create({
             userId,
             commentId,
             content,
             planId: findComment.planId,
         });
-        await newReply.save();
-        return newReply;
+
+        return;
     } catch (error) {
         throw error;
     }

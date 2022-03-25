@@ -45,60 +45,109 @@ const createNewNoticeBoard = async ({ user }) => {
     }
 };
 
-const createNewLikeNoticeMessage = async ({ sentUser, document, type }) => {
+const createNewLikeNoticeMessage = async ({ sentUser, Id, type }) => {
     try {
         let text = '';
-        if (type === 'plan') text = EVENT.LIKE.PLAN;
-        if (type === 'comment') text = EVENT.LIKE.COMMENT;
-        if (type === 'reply') text = EVENT.LIKE.REPLY;
+        if (type === 'plan') {
+            text = EVENT.LIKE.PLAN;
+            const findBoardOwner = await Plan.findOne({ _id: Id });
 
-        const findBoardOwner = await Plan.findOne({ _id: document.planId });
-        
-        if (sentUser.userId === findBoardOwner.userId.toHexString()) {
+            if (sentUser.userId === findBoardOwner.userId.toHexString()) {
+                return;
+            }
+
+            const findBoard = await NoticeBoard.findOne({
+                userId: findBoardOwner.userId,
+            });
+
+            const newMessage = new NoticeMessage({
+                noticeBoardId: findBoard.noticeBoardId,
+                noticeType: 'Like',
+                whereEvent: type,
+                sentUser: sentUser.userId,
+                planId: Id,
+                noticeTitle: `${sentUser.nickname} ${text}`,
+            });
+
+            await newMessage.save();
             return;
         }
 
-        const findBoard = await NoticeBoard.findOne({
-            userId: findBoardOwner.userId,
-        });
+        if (type === 'comment') {
+            text = EVENT.LIKE.COMMENT;
 
-        const newMessage = new NoticeMessage({
-            noticeBoardId: findBoard.noticeBoardId,
-            noticeType: 'Like',
-            whereEvent: type,
-            sentUser: sentUser.userId,
-            planId: document.planId,
-            noticeTitle: `${sentUser.nickname} ${text}`,
-        });
+            const findBoardOwner = await Comment.findOne({ _id: Id });
 
-        await newMessage.save();
-        return;
+            if (sentUser.userId === findBoardOwner.userId.toHexString()) {
+                return;
+            }
+
+            const findBoard = await NoticeBoard.findOne({
+                userId: findBoardOwner.userId,
+            });
+
+            const newMessage = new NoticeMessage({
+                noticeBoardId: findBoard.noticeBoardId,
+                noticeType: 'Like',
+                whereEvent: type,
+                sentUser: sentUser.userId,
+                planId: findBoardOwner.planId,
+                commentId: Id,
+                noticeTitle: `${sentUser.nickname} ${text}`,
+            });
+
+            await newMessage.save();
+            return;
+        }
+        if (type === 'reply') {
+            text = EVENT.LIKE.REPLY;
+
+            const findBoardOwner = await Reply.findOne({ _id: Id });
+
+            if (sentUser.userId === findBoardOwner.userId.toHexString()) {
+                return;
+            }
+
+            const findBoard = await NoticeBoard.findOne({
+                userId: findBoardOwner.userId,
+            });
+
+            const newMessage = new NoticeMessage({
+                noticeBoardId: findBoard.noticeBoardId,
+                noticeType: 'Like',
+                whereEvent: type,
+                sentUser: sentUser.userId,
+                planId: findBoardOwner.planId,
+                replyId: Id,
+                noticeTitle: `${sentUser.nickname} ${text}`,
+            });
+
+            await newMessage.save();
+            return;
+        }
     } catch (error) {
         throw error;
     }
 };
 
-const createNewCommentReplyNoticeMessage = async ({
-    sentUser,
-    document,
-    type,
-}) => {
+const createNewCommentReplyNoticeMessage = async ({ sentUser, Id, type }) => {
     try {
         let text = '';
         let findBoardOwner = '';
         if (type === 'comment') {
             text = EVENT.COMMENT.PLAN;
-            findBoardOwner = await Plan.findOne({ _id: document.planId });
+            findBoardOwner = await Plan.findOne({ _id: Id });
+            console.log(findBoardOwner.commentId);
         }
         if (type === 'reply') {
             text = EVENT.COMMENT.COMMENT;
-            findBoardOwner = await Comment.findOne({ _id: document.commentId });
+            findBoardOwner = await Comment.findOne({ _id: Id });
         }
 
         if (sentUser.userId === findBoardOwner.userId.toHexString()) {
             return;
         }
-        
+
         const findBoard = await NoticeBoard.findOne({
             userId: findBoardOwner.userId,
         });
@@ -108,7 +157,8 @@ const createNewCommentReplyNoticeMessage = async ({
             noticeType: 'CommentReply',
             whereEvent: type,
             sentUser: sentUser.userId,
-            planId: document.planId,
+            planId: findBoardOwner.planId,
+            commentId: findBoardOwner.commentId,
             noticeTitle: `${sentUser.nickname} ${text}`,
         });
 
@@ -122,7 +172,7 @@ const createNewCommentReplyNoticeMessage = async ({
 const createNewChatNoticeMessage = async ({ sentUser, document }) => {
     try {
         let text = EVENT.MESSAGE.CHAT;
-        console.log(document)
+        console.log(document);
         const findBoard = await NoticeBoard.findOne({
             userId: document.userId2,
         });
