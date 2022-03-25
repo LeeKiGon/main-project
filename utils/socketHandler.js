@@ -18,6 +18,7 @@ io.on('connection', (socket) => {
 
     //소켓 로그인
     socket.on('login', ({ fromSnsId }) => {
+        console.log(fromSnsId, '로 로그인 되었습니다')
         socket.join(fromSnsId);
     });
 
@@ -90,5 +91,8 @@ io.on('connection', (socket) => {
             console.log(error);
         }
     });
+
+
+
 });
 

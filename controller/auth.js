@@ -59,7 +59,7 @@ const kakaoCallback = (req, res, next) => {
         if (err) return next(err);
         const token = jwt.sign({ snsId: user.snsId }, JWT_SECRET_KEY);
 
-        res.json({ token, userId: user.email });
+        res.json({ token, userId: user.email, snsId: user.snsId });
     })(req, res, next);
 };
 

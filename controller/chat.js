@@ -54,8 +54,6 @@ const deletechatroom = async (req, res) => {
     const { userId } = res.locals.user
     const { chatRoomId } = req.params
 
-    console.log('params챗룸아이디',chatRoomId)
-
     await chatService.getOutChatRoom({ chatRoomId, userId });
     res.json({
         result: 'success',

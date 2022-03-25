@@ -122,7 +122,7 @@ const createNewCommentReplyNoticeMessage = async ({
 const createNewChatNoticeMessage = async ({ sentUser, document }) => {
     try {
         let text = EVENT.MESSAGE.CHAT;
-
+        console.log(document)
         const findBoard = await NoticeBoard.findOne({
             userId: document.userId2,
         });

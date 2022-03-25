@@ -93,13 +93,12 @@ const getChatMessageByRoomNum = async ({
             throw new Error('잘못된 요청입니다.');
         }
         const findChatRoom = await ChatRoom.findOne({ roomNum });
-        console.log("a : " ,findChatRoom.outUser, "\n b : ", myProfile.userId)
-        if (findChatRoom.outUser === myProfile.userId) {
-            findChatRoom.outUser = '';
-            await findChatRoom.save();
-        }
-
+        
         if (findChatRoom) {
+            if (findChatRoom.outUser === myProfile.userId) {
+                findChatRoom.outUser = '';
+                await findChatRoom.save();
+            }
             const findChatMessages = await ChatMessage.find({
                 $and: [
                     { chatRoomId: findChatRoom.chatRoomId },
@@ -212,12 +211,10 @@ const getOutChatRoom = async ({ chatRoomId, userId }) => {
     const findChatRoom = await ChatRoom.findOne({ _id: chatRoomId });
     if (findChatRoom.outUser === '') {
         findChatRoom.outUser = userId;
-        console.log('아웃유저',findChatRoom.outUser)
         await findChatRoom.save();
         const findChatMessages = await ChatMessage.find({ chatRoomId });
         for (let message of findChatMessages) {
             if (message.outUser !== '') {
-                console.log('메세지',message)
                 await ChatMessage.deleteOne({ _id: message._id });
             } else {
                 message.outUser = userId;
@@ -226,7 +223,6 @@ const getOutChatRoom = async ({ chatRoomId, userId }) => {
         }
         return;
     } else {
-        console.log('챗룸아이디',chatRoomId)
         await ChatRoom.deleteOne({ _id: chatRoomId });
         return;
     }
