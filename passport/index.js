@@ -4,9 +4,9 @@ const kakaoStrategy = require('passport-kakao').Strategy;
 const NoticeService = require('../services/notice')
 const User = require('../models/user');
 
-const { KAKAO_CLIENT_SECRET, KAKAO_CLIENT_ID, DOMAIN, ROCALDOMAIN } = process.env;
+const { KAKAO_CLIENT_SECRET, KAKAO_CLIENT_ID, DOMAIN} = process.env;
 
-const callbackURL = (platform) => `${DOMAIN}/api/auth/${platform}/callback` || `${ROCALDOMAIN}/api/auth/${platform}/callback`
+const callbackURL = (platform) => `${DOMAIN}/api/auth/${platform}/callback`
 
 module.exports = (app) => {
     app.use(passport.initialize());
