@@ -57,9 +57,6 @@ const ROUTE = {
         UPDATE: '/plans/:planId/:commentId',
         DELETE: '/plans/:planId/:commentId',
     },
-    SEARCH: {
-        SEARCH: '/plans/search',
-    },
     REPLIES: {
         ADD: '/plans/comments/:commentId/reply',
         UPDATE: '/plans/comments/replies/:replyId',
@@ -79,6 +76,7 @@ const ROUTE = {
         GET_HOT_BOOKMARK: '/plans/hotBookmark',
         GET_HOT_DOMESTIC: '/plans/hotDomestic',
         GET_HOT_INTERNATINAL: '/plans/hotInternational',
+        SEARCH: '/plans/search',
     },
     AUTH: {
         KAKAO: '/auth/kakao',

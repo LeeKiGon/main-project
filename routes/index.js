@@ -8,14 +8,12 @@ const likesRouter = require('./likes');
 const AuthRouter = require('./auth');
 const bookmarksRouter = require('./bookmarks');
 const repliesRouter = require('./replies');
-const searchRouter = require('./search');
 const chatsRouter = require('./chats');
 const noticesRouter = require('./notices')
 
 const { ROUTE } = require("../config/constants");
 
 router.use(ROUTE.INDEX, placesRouter);
-router.use(ROUTE.INDEX, searchRouter);
 router.use(ROUTE.INDEX, likesRouter);
 router.use(ROUTE.INDEX, AuthRouter);
 router.use(ROUTE.INDEX, bookmarksRouter);

@@ -16,26 +16,24 @@ const getAllPlans = async (req, res) => {
 };
 
 const getMostLikedPlans = async (req, res) => {
-    
-    const findPlans = await planService.findLikePlanByDate()
+    const findPlans = await planService.findLikePlanByDate();
 
     return res.json({
         result: 'success',
         message: '성공',
-        plans: findPlans
-    })
-}
+        plans: findPlans,
+    });
+};
 
 const getMostBookMarkedPlans = async (req, res) => {
-    
-    const findPlans = await planService.findBookMarkPlanByDate()
+    const findPlans = await planService.findBookMarkPlanByDate();
 
     return res.json({
         result: 'success',
         message: '성공',
-        plans: findPlans
-    })
-}
+        plans: findPlans,
+    });
+};
 
 const addNewPlan = async (req, res) => {
     const { user } = res.locals;
@@ -142,7 +140,8 @@ const addNewThumbnail = async (req, res) => {
 const updatePlanInfo = async (req, res) => {
     const { userId } = res.locals.user;
     const { planId } = req.params;
-    const { title, startDate, endDate, destination, style, withlist } = req.body;
+    const { title, startDate, endDate, destination, style, withlist } =
+        req.body;
 
     const findPlan = await planService.findOnePlanByPlanId({ planId });
     if (findPlan.userId.toHexString() !== userId) {
@@ -151,7 +150,15 @@ const updatePlanInfo = async (req, res) => {
             message: '본인의 여행만 변경할수 있습니다.',
         });
     }
-    await planService.updatePlan({ planId , title, startDate, endDate, destination, style, withlist });
+    await planService.updatePlan({
+        planId,
+        title,
+        startDate,
+        endDate,
+        destination,
+        style,
+        withlist,
+    });
 
     return res
         .status(200)
@@ -163,13 +170,24 @@ const copyPlan = async (req, res) => {
     const { planId } = req.params;
 
     const copyPlan = await planService.copyPlanByPlanId({ planId, user });
-    
+
     // const io = require('../config/socket').getIo();
     // io.to('21428643792142969908').emit('new', copyPlan);
-    return res
-    .status(200)
-    .json({ result: 'success', message: '복사 완료 되었습니다.', planId: copyPlan.planId });
-} 
+    return res.status(200).json({
+        result: 'success',
+        message: '복사 완료 되었습니다.',
+        planId: copyPlan.planId,
+    });
+};
+
+const searchPlan = async (req, res) => {
+    const { user } = res.locals.user;
+    let { page, query, style, destination, sort } = req.query;
+
+    const Search = await planService.getSearch({ page, query, destination, style, user, sort });
+
+    return res.json(Search);
+};
 
 module.exports = {
     getAllPlans,
@@ -182,5 +200,6 @@ module.exports = {
     updatePlanInfo,
     copyPlan,
     getMostLikedPlans,
-    getMostBookMarkedPlans
+    getMostBookMarkedPlans,
+    searchPlan,
 };

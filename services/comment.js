@@ -16,7 +16,7 @@ const getCommentLike = async (foundComment, user) => {
 
 const createComment = async ({ userId, content, planId }) => {
     try {
-        aw({
+        const newComment = new Comment({
             userId,
             content,
             planId,
