@@ -27,4 +27,4 @@ jobs:
           cd /home/ubuntu/main-project
           sudo git pull
           sudo npm install
-          sudo pm2 restart server.js
+          sudo pm2 reload server.js
