@@ -7,52 +7,51 @@ const Place = require('../models/place');
 const Day = require('../models/day');
 const Comment = require('../models/comment');
 
-const PlanSchema = new mongoose.Schema({
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        // foreignFields: '_id',
+const PlanSchema = new mongoose.Schema(
+    {
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            // foreignFields: '_id',
+        },
+        title: {
+            type: String,
+        },
+        destination: {
+            type: String,
+        },
+        locations: {
+            type: Array,
+        },
+        withlist: {
+            type: Array,
+        },
+        style: {
+            type: Array,
+        },
+        status: {
+            type: String,
+            default: '비공개',
+        },
+        thumbnailImage: {
+            type: String,
+        },
+        startDate: {
+            type: String,
+        },
+        endDate: {
+            type: String,
+        },
+        scrapCount: {
+            type: Number,
+            default: 0,
+        },
+        copyplan: {
+            type: String,
+        },
     },
-    title: {
-        type: String
-    },
-    destination: {
-        type: String
-    },
-    locations: {
-        type: Array
-    },
-    withlist: {
-        type: Array
-    },
-    style: {
-        type: Array
-    },
-    status: {
-        type: String,
-        default: '비공개'
-    },
-    nickname: {
-        type: String
-    },
-    thumbnailImage: {
-        type: String
-    },
-    startDate: {
-        type: String
-    },
-    endDate: {
-        type: String
-    },
-    scrapCount: {
-        type: Number,
-        default: 0
-    },
-    copyplan: {
-        type: String,
-    }
-},
-{timestamps:true});
+    { timestamps: true }
+);
 
 PlanSchema.virtual('planId').get(function () {
     return this._id.toHexString();
@@ -75,28 +74,38 @@ PlanSchema.virtual('likeCount', {
     ref: 'Like',
     localField: '_id',
     foreignField: 'planId',
-    count:true,
+    count: true,
 });
 
-PlanSchema.statics.findLikeBookmark = async function (foundPlan , user) {
+PlanSchema.statics.findLikeBookmark = async function (foundPlan, user) {
     // const findPaging = await this.find().sort('-createdAt').skip(5 * (page - 1)).limit(5).populate('userId likeCount bookmarkCount', 'snsId email nickname profile_img').exec();
     // console.log(foundPlan)
-    if(user === undefined){
+    if (user === undefined) {
         for (let i = 0; i < foundPlan.length; i++) {
-        foundPlan[i]._doc.isLike = false;
-        foundPlan[i]._doc.isBookmark = false;
+            foundPlan[i]._doc.isLike = false;
+            foundPlan[i]._doc.isBookmark = false;
         }
         return foundPlan;
     }
 
     for (let i = 0; i < foundPlan.length; i++) {
-        const LikeUser = await Like.findOne({ userId : user.userId, planId: foundPlan[i].planId })
+        const LikeUser = await Like.findOne({
+            userId: user.userId,
+            planId: foundPlan[i].planId,
+        });
         // console.log("likeUser :", LikeUser)
-        const BookMarkUser = await Bookmark.findOne({ userId : user.userId, planId: foundPlan[i].planId })
+        const BookMarkUser = await Bookmark.findOne({
+            userId: user.userId,
+            planId: foundPlan[i].planId,
+        });
         // console.log("BookMarkUser :", BookMarkUser)
-        LikeUser ? foundPlan[i]._doc.isLike = true : foundPlan[i]._doc.isLike = false
-        BookMarkUser ? foundPlan[i]._doc.isBookmark = true : foundPlan[i]._doc.isBookmark = false
-    };
+        LikeUser
+            ? (foundPlan[i]._doc.isLike = true)
+            : (foundPlan[i]._doc.isLike = false);
+        BookMarkUser
+            ? (foundPlan[i]._doc.isBookmark = true)
+            : (foundPlan[i]._doc.isBookmark = false);
+    }
     return foundPlan;
 };
 
