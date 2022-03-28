@@ -87,12 +87,21 @@ io.on('connection', (socket) => {
             // });
             // getChat.fromSnsId = fromSnsId;
             io.to(roomNum).emit('chat', chatMessage);
-            io.to(toSnsId).emit('list', chatMessage);
+            io.to(toSnsId).emit('chatNotice', {newChat: true});
             console.log(toSnsId)
         } catch (error) {
             console.log(error);
         }
     });
+
+    // notice
+    socket.on('notice', async ({ fromSnsId , toSnsId, noticeType, whereEvent }) => {
+        try {
+            io.to(toSnsId).emit('noticePage', {newNotice: true});
+        } catch (error) {
+            throw error
+        }
+    })
 
 
 

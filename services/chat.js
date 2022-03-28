@@ -146,7 +146,9 @@ const getChatRoomList = async ({ userId }) => {
                     outUser: { $ne: userId },
                 },
             ],
-        }).populate({
+        }) 
+        .sort('-createdAt')
+        .populate({
             path: 'lastChat userId userId2',
         });
 

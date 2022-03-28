@@ -604,10 +604,12 @@ const addThumbnail = async ({ thumbnailImage, planId }) => {
 
 const copyPlanByPlanId = async ({ planId, user }) => {
     try {
-        const findPlan = await Plan.findOne({ _id: planId }).populate('userId').populate({
-            path: 'days',
-            populate: { path: 'places' },
-        });
+        const findPlan = await Plan.findOne({ _id: planId })
+            .populate('userId')
+            .populate({
+                path: 'days',
+                populate: { path: 'places' },
+            });
 
         const newPlan = new Plan({
             userId: user.userId,
