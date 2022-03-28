@@ -146,7 +146,7 @@ const getChatRoomList = async ({ userId }) => {
                     outUser: { $ne: userId },
                 },
             ],
-        }) 
+        })
         .sort('-updatedAt')
         .populate({
             path: 'lastChat userId userId2',

@@ -181,7 +181,7 @@ const copyPlan = async (req, res) => {
 };
 
 const searchPlan = async (req, res) => {
-    const { user } = res.locals.user;
+    const { user } = res.locals;
     let { page, query, style, destination, sort } = req.query;
 
     const Search = await planService.getSearch({ page, query, destination, style, user, sort });
