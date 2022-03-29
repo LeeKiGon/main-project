@@ -16,6 +16,9 @@ const UserSchema = new mongoose.Schema({
     provider: {
         type: String,
     },
+    password: {
+        type: String,
+    }
 });
 
 UserSchema.virtual('userId').get(function () {

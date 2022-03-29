@@ -1,4 +1,5 @@
 require('dotenv').config();
+
 const helmet = require('helmet');
 const express = require('express');
 // const fs = require('fs');
@@ -26,10 +27,10 @@ app.use((req, res, next) => {
     );
     next();
 });
-// console.log(new Date())
 
 const corsOptions = {
     origin: '*',
+    // origin: 'https://zzayeo.com, zzayeo.com/'
     // credentials: true
 };
 

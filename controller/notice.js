@@ -43,8 +43,23 @@ const deleteAllNotice = async (req, res) => {
     });
 };
 
+const getNewNotice = async (req, res) => {
+    const { user } = res.locals;
+
+    const findNotices = await NoticeService.checkNewNotice ({ user });
+
+    const falseNotices = findNotices.filter((el) => el.checkNotice === false)
+
+    res.json({
+        result: 'success',
+        message: '조회 성공하였습니다.',
+
+    });
+};
+
 module.exports = {
     getAllNotice,
     deleteOneNotice,
     deleteAllNotice,
+    getNewNotice
 };

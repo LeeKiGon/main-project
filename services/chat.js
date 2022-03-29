@@ -21,6 +21,7 @@ const findAndUpdateChatRoom = async ({ fromSnsId, toSnsId, roomNum }) => {
                 roomNum,
             });
             await newRoom.save()
+            await newRoom.populate('userId')
             return newRoom;
         }
         // 기존 채팅 방이 있으면 해당 채팅방의 checkChat 전부 true로 업데이트 후 리턴

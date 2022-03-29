@@ -13,14 +13,14 @@ const DIRECTORY = {
         style: [
             '액티비티 체험',
             '문화 예술 역사 체험',
-            '명소 관광지 방문 필수',
+            '명소 관광지 방문필수',
             '페스티벌 참여',
-            '먹방 투어',
+            '먹방투어',
             '쇼핑 좋아',
             '편하게 쉬는 휴양',
             'SNS 핫플 투어',
             '호캉스',
-            '자연 친화',
+            '자연친화',
         ],
     },
 };
@@ -85,6 +85,9 @@ const ROUTE = {
         GET_USERS_INFOMATION: '/users/:userId',
         UPDATE_MY_INFOMATION: '/users/auth/me',
         WITHDRAW: '/users/auth/me',
+        CHECK_EMAIL : '/users/email',
+        SIGN_UP : '/users',
+        SIGN_IN : '/users/auth'
     },
     PLACES: {
         ADD: '/plans/days/:dayId',
@@ -100,8 +103,9 @@ const ROUTE = {
     },
     NOTICE: {
         GET_MY : '/notice',
-        DELETE_NOTICE : '/notice/:noticeMessageId',
-        DELETE_ALL_NOTICE : '/notice'
+        DELETE : '/notice/:noticeMessageId',
+        DELETE_ALL : '/notice',
+        GET_NEW : '/notice/new'
     }
 };
 

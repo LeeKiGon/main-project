@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
+// Routers
 const plansRouter = require('./plans');
 const placesRouter = require('./places');
 const commentsRouter = require('./comments');
@@ -11,6 +12,7 @@ const repliesRouter = require('./replies');
 const chatsRouter = require('./chats');
 const noticesRouter = require('./notices')
 
+// Constatns
 const { ROUTE } = require("../config/constants");
 
 router.use(ROUTE.INDEX, placesRouter);

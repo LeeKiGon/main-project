@@ -13,7 +13,6 @@ const getCommentLike = async (foundComment, user) => {
     return commentLike;
 };
 
-
 const createComment = async ({ userId, content, planId }) => {
     try {
         const newComment = new Comment({

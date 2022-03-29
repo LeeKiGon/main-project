@@ -1,12 +1,15 @@
 const express = require('express');
 const router = express.Router();
+
+// Controllers
 const planController = require('../controller/plan');
 
-//미들웨어
+// MiddleWares
 const authMiddleware = require('../middlewares/auth-middleware');
 const { upload } = require('../middlewares/upload');
 const imageUploder = upload.single('imageFile');
 
+// Constants
 const { ROUTE } = require('../config/constants');
 
 // 이번달 북마크 검색
@@ -25,16 +28,12 @@ router.get(
 
 // 여행 검색하기
 router.get(ROUTE.PLAN.SEARCH, authMiddleware, planController.searchPlan);
-
 // 전체 여행 불러오기
 router.get(ROUTE.PLAN.GET_ALL, authMiddleware, planController.getAllPlans);
-
 // 여행 생성하기
 router.post(ROUTE.PLAN.ADD, authMiddleware, planController.addNewPlan);
-
 // 특정여행 불러오기
 router.get(ROUTE.PLAN.GET, authMiddleware, planController.getPlanByPlanId);
-
 // 공개 / 비공개 설정
 router.post(
     ROUTE.PLAN.CHANGE_STATUS,
