@@ -13,9 +13,8 @@ const findAllNotice = async ({ user }) => {
         const findBoard = await NoticeBoard.findOne({
             userId: user.userId,
         })
-        .sort('-createdAt')
         .populate({
-            path: 'notices',
+            path: 'notices', sort: { createdAt : -1},
             populate: { path: 'sentUser', select: 'profile_img' },
         });
         await NoticeMessage.where({
