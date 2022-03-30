@@ -14,7 +14,7 @@ const findAllNotice = async ({ user }) => {
             userId: user.userId,
         })
         .populate({
-            path: 'notices', options: {sort: { 'createdAt' : -1}} ,
+            path: 'notices', sort: { createdAt : -1},
             populate: { path: 'sentUser', select: 'profile_img' },
         });
         await NoticeMessage.where({
