@@ -7,6 +7,10 @@ const SOCKET_CORS = {
     methods: ['GET', 'POST'],
 };
 
+const STATIC_IMAGE = {
+    PROFILE_IMAGE : "https://triplan-project.s3.ap-northeast-2.amazonaws.com/images/1648708819064cb4t4ef0l1emnuk8.jpeg"
+}
+
 const DIRECTORY = {
     PLAN: {
         destination: ['국내', '해외'],
@@ -114,5 +118,6 @@ module.exports = {
     MESSAGE,
     ROUTE,
     DIRECTORY,
-    NOTICE_EVENT
+    NOTICE_EVENT,
+    STATIC_IMAGE
 };

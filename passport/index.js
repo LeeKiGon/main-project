@@ -5,6 +5,7 @@ const NoticeService = require('../services/notice')
 const User = require('../models/user');
 
 const { KAKAO_CLIENT_SECRET, KAKAO_CLIENT_ID, DOMAIN} = process.env;
+const { STATIC_IMAGE : IMAGE } = require('../config/constants')
 
 const callbackURL = (platform) => `${DOMAIN}/api/auth/${platform}/callback`
 
@@ -27,14 +28,17 @@ module.exports = (app) => {
                         await NoticeService.createNewNoticeBoard({ user : findExistUser })
                         done(null, findExistUser);
                     } else {
+                        let profile_img = '';
+                        !profile._json.properties.thumbnail_image 
+                            ? profile_img = IMAGE.PROFILE_IMAGE 
+                            : profile_img = profile._json.properties.thumbnail_image;
                         const newUser = await User.create({
                             email:
                                 profile._json &&
                                 profile._json.kakao_account.email,
                             nickname: profile.displayName,
                             snsId: profile.id,
-                            profile_img:
-                                profile._json.properties.thumbnail_image,
+                            profile_img,
                             provider: 'kakao',
                         });
 
