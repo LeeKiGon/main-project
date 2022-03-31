@@ -1,7 +1,7 @@
 module.exports = {
     apps: [
         {
-            name: 'jjayeo',
+            name: 'zzayeo',
             script: './server.js',
             args: 'start',
             instances: 3,

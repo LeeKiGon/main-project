@@ -1,4 +1,3 @@
-const User = require('../models/user');
 const Plan = require('../models/plan');
 const Place = require('../models/place');
 const Day = require('../models/day');
@@ -31,10 +30,10 @@ const findLikePlanByDate = async () => {
     const thisMonthPlan = await Plan.aggregate()
         .match({
             status: '공개',
-            updatedAt: {
-                $gte: firstDayCalculator(new Date()),
-                $lt: nextMonthCalculator(new Date()),
-            },
+            // updatedAt: {
+            //     $gte: firstDayCalculator(new Date()),
+            //     $lt: nextMonthCalculator(new Date()),
+            // },
         })
         .lookup({
             from: 'likes',
@@ -91,18 +90,17 @@ const findLikePlanByDate = async () => {
             planLikes: 0,
             planBookMarks: 0,
         });
-
     return thisMonthPlan;
 };
 
-const findBookMarkPlanByDate = async () => {
+const findBookMarkPlanByDate = async () => {    
     const thisMonthPlan = await Plan.aggregate()
         .match({
             status: '공개',
-            updatedAt: {
-                $gte: firstDayCalculator(new Date()),
-                $lt: nextMonthCalculator(new Date()),
-            },
+            // updatedAt: {
+            //     $gte: firstDayCalculator(new Date()),
+            //     $lt: nextMonthCalculator(new Date()),
+            // },
         })
         .lookup({
             from: 'likes',
@@ -158,8 +156,7 @@ const findBookMarkPlanByDate = async () => {
         .project({
             planLikes: 0,
             planBookMarks: 0,
-        });
-
+        });  
     return thisMonthPlan;
 };
 
