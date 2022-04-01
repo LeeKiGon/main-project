@@ -44,9 +44,9 @@ io.on('connection', (socket) => {
                 roomNum,
             });
             if(checkFirst) await NoticeService.createNewChatNoticeMessage({sentUser: checkFirst.userId, document: checkFirst})
+            socket.leave(fromSnsId);
             socket.join(roomNum);
             io.to(roomNum).emit('join', toSnsId);
-            socket.leave(fromSnsId);
         } catch (error) {
             console.log(error);
         }
